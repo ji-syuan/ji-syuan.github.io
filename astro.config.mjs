@@ -8,6 +8,7 @@ export default defineConfig({
     output: 'static',
     trailingSlash: 'always',
     site: 'https://ji-syuan.github.io',
+    base: 'ji-syuan.github.io',
 
     // Single page, no prefetch needed
     prefetch: false,
