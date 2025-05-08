@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
     output: 'static',
     trailingSlash: 'always',
-    site: 'https://Yasmine-Cheng.github.io',
+    site: 'https://ji-syuan.github.io',
 
     // Single page, no prefetch needed
     prefetch: false,
