@@ -1,0 +1,47 @@
+---
+// 通用卡片組件
+interface Props {
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  linkUrl?: string;
+  linkText?: string;
+  className?: string;
+}
+
+const { 
+  title, 
+  description = "", 
+  imageUrl, 
+  linkUrl, 
+  linkText = "了解更多", 
+  className = "" 
+} = Astro.props;
+---
+
+<div class={`border border-gray-700 rounded-lg overflow-hidden bg-black hover:border-primary transition-all ${className}`}>
+  {imageUrl && (
+    <div class="w-full h-48 bg-gray-800 relative">
+      <img 
+        src={imageUrl} 
+        alt={title} 
+        class="w-full h-full object-cover"
+        onerror="this.style.display='none'; this.parentNode.innerHTML += '<div class=\'absolute inset-0 flex items-center justify-center\'><p class=\'text-white\'>圖片預留區</p></div>'"
+      />
+    </div>
+  )}
+  
+  <div class="p-4">
+    <h3 class="text-xl font-semibold text-white mb-2">{title}</h3>
+    {description && <p class="text-gray-400 mb-4">{description}</p>}
+    
+    {linkUrl && (
+      <a 
+        href={linkUrl} 
+        class="inline-block px-4 py-2 bg-black text-primary border border-primary rounded-lg hover:bg-primary hover:text-black transition-all"
+      >
+        {linkText}
+      </a>
+    )}
+  </div>
+</div>

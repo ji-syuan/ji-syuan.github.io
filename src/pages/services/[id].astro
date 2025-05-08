@@ -1,0 +1,194 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+
+// 定義靜態路徑
+export function getStaticPaths() {
+  // 返回您想要預渲染的所有可能路徑
+  return [
+    { params: { id: '1' } },
+    { params: { id: '2' } },
+    { params: { id: '3' } },
+    { params: { id: '4' } }
+  ];
+}
+
+// 獲取服務 ID 參數
+const { id } = Astro.params;
+
+// 模擬服務數據
+const service = {
+  id: id,
+  name: `服務 ${id}`,
+  subtitle: "專業解決方案",
+  description: `這是服務 ${id} 的詳細描述。我們提供專業、高效的解決方案，滿足您的各種需求。`,
+  details: [
+    "我們的專業團隊擁有豐富的經驗和專業知識。",
+    "我們使用最新的技術和工具，確保服務質量。",
+    "我們致力於提供客戶滿意的服務體驗。",
+    "我們的服務流程透明，價格合理。"
+  ],
+  process: [
+    { step: 1, title: "需求分析", description: "與客戶溝通，了解需求和期望。" },
+    { step: 2, title: "方案設計", description: "根據需求設計最佳解決方案。" },
+    { step: 3, title: "實施", description: "執行方案，確保每個細節都符合要求。" },
+    { step: 4, title: "驗收與反饋", description: "交付成果，收集客戶反饋並持續改進。" }
+  ],
+  image: `/img/services/service${id}.jpg`,
+  caseStudies: [
+    { id: 1, title: "案例研究 1", summary: "這是一個成功的案例研究示例。" },
+    { id: 2, title: "案例研究 2", summary: "這是另一個成功的案例研究示例。" }
+  ]
+};
+
+// 相關服務
+const relatedServices = [1, 2, 3, 4]
+  .filter(num => num !== Number(id))
+  .map(num => ({
+    id: num,
+    name: `服務 ${num}`,
+    summary: `這是服務 ${num} 的簡短介紹。`
+  }));
+
+// 面包屑項目
+const breadcrumbItems = [
+  { name: "服務領域", url: "/services" },
+  { name: service.name, url: `/services/${id}`, current: true }
+];
+
+// 頁面標題
+const pageTitle = `${service.name} | 服務詳情`;
+---
+
+<Layout title={pageTitle}>
+  <!-- 固定頂板 -->
+  <Navbar />
+  
+  <!-- 主要內容區域 -->
+  <main class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto border border-gray-600 rounded-2xl overflow-hidden shadow-2xl relative bg-black my-4">
+    
+    <!-- 左側側欄 -->
+    <div class="w-full lg:w-1/4 border-b lg:border-b-0 lg:border-r border-gray-600">
+      <Sidebar />
+    </div>
+    
+    <!-- 右側內容區 -->
+    <div class="w-full lg:w-3/4 p-6">
+      <!-- 面包屑導航 -->
+      <Breadcrumb items={breadcrumbItems} />
+      
+      <article class="service-detail">
+        <!-- 服務標題 -->
+        <header class="mb-8">
+          <h1 class="text-2xl font-bold text-white mb-2">{service.name}</h1>
+          <p class="text-primary">{service.subtitle}</p>
+        </header>
+        
+        <!-- 頂部介紹 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          <!-- 服務圖片 -->
+          <div class="w-full h-64 bg-gray-800 rounded-lg flex items-center justify-center">
+            <p class="text-white">服務示意圖</p>
+          </div>
+          
+          <!-- 服務介紹 -->
+          <div>
+            <h2 class="text-xl font-semibold text-white mb-4">服務介紹</h2>
+            <p class="text-gray-300 mb-4">{service.description}</p>
+            
+            <ul class="space-y-2">
+              {service.details.map(detail => (
+                <li class="flex items-start">
+                  <svg class="w-5 h-5 text-primary mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span class="text-gray-300">{detail}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        
+        <!-- 服務流程 -->
+        <div class="mb-10">
+          <h2 class="text-xl font-semibold text-white mb-6">服務流程</h2>
+          
+          <div class="relative">
+            <!-- 連接線 -->
+            <div class="absolute left-6 top-8 w-1 h-[calc(100%-4rem)] bg-gray-700"></div>
+            
+            <!-- 流程步驟 -->
+            <div class="space-y-8">
+              {service.process.map(step => (
+                <div class="flex">
+                  <div class="relative flex-shrink-0 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-black font-bold z-10">
+                    {step.step}
+                  </div>
+                  <div class="ml-4 pt-2">
+                    <h3 class="text-lg font-medium text-white mb-2">{step.title}</h3>
+                    <p class="text-gray-400">{step.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <!-- 案例研究 -->
+        <div class="mb-10">
+          <h2 class="text-xl font-semibold text-white mb-6">案例研究</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {service.caseStudies.map(caseStudy => (
+              <div class="border border-gray-700 rounded-lg p-6 hover:border-primary transition-all">
+                <h3 class="text-lg font-medium text-white mb-3">{caseStudy.title}</h3>
+                <p class="text-gray-400 mb-4">{caseStudy.summary}</p>
+                <a href="#" class="text-primary hover:underline">查看詳情 →</a>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <!-- 聯絡我們 -->
+        <div class="bg-gray-900 border border-gray-700 rounded-lg p-6 mb-10">
+          <h2 class="text-xl font-semibold text-white mb-4">需要更多信息？</h2>
+          <p class="text-gray-300 mb-4">如果您對我們的服務有任何疑問，或者想了解更多信息，請隨時聯繫我們。我們的團隊將很樂意為您提供幫助。</p>
+          <a 
+            href="/contact" 
+            class="inline-block px-6 py-3 bg-primary text-black font-medium rounded-lg hover:bg-opacity-90 transition-all"
+          >
+            聯絡我們
+          </a>
+        </div>
+        
+        <!-- 相關服務 -->
+        <div class="related-services">
+          <h2 class="text-xl font-semibold text-white mb-6">相關服務</h2>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {relatedServices.map(relService => (
+              <div class="border border-gray-700 rounded-lg overflow-hidden hover:border-primary transition-all">
+                <div class="p-4">
+                  <h3 class="text-lg font-medium text-white mb-2">{relService.name}</h3>
+                  <p class="text-gray-400 mb-3">{relService.summary}</p>
+                  <a 
+                    href={`/services/${relService.id}`} 
+                    class="text-primary hover:underline"
+                  >
+                    了解更多 →
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <!-- 頁腳 -->
+  <Footer />
+</Layout>

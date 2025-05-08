@@ -1,0 +1,180 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import ContentSection from '../../components/ContentSection.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout>
+    <!-- 固定頂板 -->
+    <Navbar />
+
+    <!-- 主要內容區域 -->
+    <main class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto border border-gray-600 rounded-2xl overflow-hidden shadow-2xl relative bg-black my-4">
+        
+        <!-- 左側側欄 -->
+        <div class="w-full lg:w-1/4 border-b lg:border-b-0 lg:border-r border-gray-600">
+            <Sidebar />
+        </div>
+        
+        <!-- 右側內容區 -->
+        <div class="w-full lg:w-3/4 p-0">
+            <div class="min-h-full h-[80vh] flex flex-col overflow-y-scroll">
+                
+                <!-- 分頁內容控制 -->
+                <div class="tab-controls">
+                    <input type="radio" id="tab1" name="tabs" class="tab-radio" checked />
+                    <input type="radio" id="tab2" name="tabs" class="tab-radio" />
+                    <input type="radio" id="tab3" name="tabs" class="tab-radio" />
+                    <input type="radio" id="tab4" name="tabs" class="tab-radio" />
+                    
+                    <!-- 頂部分頁導航 -->
+                    <div class="flex overflow-x-auto scrollbar-hide bg-black border-b border-gray-600 sticky top-0 z-10" id="tabBar">
+                        <label for="tab1" class="tab-link flex items-center gap-2 py-2 px-4 text-xs cursor-pointer bg-black text-gray-100 hover:text-primary border-r border-r-gray-600">
+                            <svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                            <h2>首頁.md</h2>
+                        </label>
+                        
+                        <label for="tab2" class="tab-link flex items-center gap-2 py-2 px-4 text-xs cursor-pointer bg-black text-gray-100 hover:text-primary border-r border-r-gray-600">
+                            <svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                            <h2>產品介紹.ts</h2>
+                        </label>
+                        
+                        <label for="tab3" class="tab-link flex items-center gap-2 py-2 px-4 text-xs cursor-pointer bg-black text-gray-100 hover:text-primary border-r border-r-gray-600">
+                            <svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                            <h2>服務領域.md</h2>
+                        </label>
+                        
+                        <label for="tab4" class="tab-link flex items-center gap-2 py-2 px-4 text-xs cursor-pointer bg-black text-gray-100 hover:text-primary border-r border-r-gray-600">
+                            <svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                            <h2>聯絡我們.js</h2>
+                        </label>
+                    </div>
+                    
+                    <!-- 分頁內容區域 -->
+                    <div class="p-6 flex-grow overflow-y-auto bg-black">
+                        <div id="content1" class="tab-content">
+                            <ContentSection title="首頁" />
+                        </div>
+                        
+                        <div id="content2" class="tab-content">
+                            <ContentSection title="產品介紹" />
+                        </div>
+                        
+                        <div id="content3" class="tab-content">
+                            <ContentSection title="服務領域" />
+                        </div>
+                        
+                        <div id="content4" class="tab-content">
+                            <ContentSection title="聯絡我們" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 頁腳 -->
+    <Footer />
+</Layout>
+
+<style is:global>
+    /* 隱藏單選按鈕 */
+    .tab-radio {
+        @apply absolute opacity-0 pointer-events-none;
+    }
+
+    /* 預設狀態 - 隱藏所有分頁內容 */
+    .tab-content {
+        @apply hidden opacity-0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    /* 分頁連結預設狀態 */
+    .tab-link {
+        @apply border-b-2 border-transparent bg-transparent;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    /* 當選中分頁時顯示對應內容並標記分頁 */
+    #tab1:checked ~ * #content1 {
+        @apply block opacity-100;
+    }
+
+    #tab1:checked ~ .flex .tab-link:nth-child(1) {
+        @apply border-b-2 border-b-primary;
+    }
+
+    #tab2:checked ~ * #content2 {
+        @apply block opacity-100;
+    }
+
+    #tab2:checked ~ .flex .tab-link:nth-child(2) {
+        @apply border-b-2 border-b-primary;
+    }
+
+    #tab3:checked ~ * #content3 {
+        @apply block opacity-100;
+    }
+
+    #tab3:checked ~ .flex .tab-link:nth-child(3) {
+        @apply border-b-2 border-b-primary;
+    }
+
+    #tab4:checked ~ * #content4 {
+        @apply block opacity-100;
+    }
+
+    #tab4:checked ~ .flex .tab-link:nth-child(4) {
+        @apply border-b-2 border-b-primary;
+    }
+
+    /* 隱藏捲軸 */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabInputs = document.querySelectorAll('.tab-radio');
+        const tabBar = document.getElementById('tabBar');
+        
+        // 為每個分頁標籤添加變更事件監聽器
+        tabInputs.forEach((input) => {
+            input.addEventListener('change', () => {
+                if ((input as HTMLInputElement).checked) {
+                    // 獲取對應的分頁連結
+                    const tabId = input.id;
+                    const tabLink = document.querySelector(`label[for="${tabId}"]`);
+                    
+                    if (tabLink && tabBar) {
+                        // 計算捲動位置，使當前分頁置中
+                        const tabBarWidth = (tabBar as HTMLElement).offsetWidth;
+                        const tabLinkLeft = (tabLink as HTMLElement).offsetLeft;
+                        const tabLinkWidth = (tabLink as HTMLElement).offsetWidth;
+                        
+                        // 捲動到分頁位置
+                        tabBar.scrollTo({
+                            left: tabLinkLeft - (tabBarWidth / 2) + (tabLinkWidth / 2),
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // 初始捲動到當前選中的分頁
+        const checkedInput = document.querySelector('.tab-radio:checked');
+        if (checkedInput) {
+            const event = new Event('change');
+            checkedInput.dispatchEvent(event);
+        }
+    });
+</script>

@@ -1,0 +1,296 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="首頁 | 公司名稱">
+<!-- 頂部固定導航欄 -->
+<header class="fixed top-0 left-0 right-0 z-50 px-4 py-4">
+    <!-- 灰色圓角背景條 -->
+    <div class="bg-gray-600 rounded-full flex justify-between items-center px-6 py-2">
+      <!-- 左側 LOGO -->
+      <div class="logo-container">
+        <div class="text-white text-2xl font-bold">LOGO</div>
+        <!-- 替換為您的 LOGO 圖片 -->
+        <!-- <img src="/img/logo.svg" alt="公司 LOGO" class="h-10"> -->
+      </div>
+      
+      <!-- 右側導航選單 -->
+      <nav class="main-nav">
+        <ul class="flex">
+          <li><a href="/about" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">認識我們</a></li>
+          <li><a href="/products" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">產品介紹</a></li>
+          <li><a href="/services" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">服務領域</a></li>
+          <li><a href="/contact" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">聯絡我們</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 全屏背景和中央內容 -->
+  <main class="h-screen w-full bg-black flex flex-col justify-center items-center relative">
+    <!-- 背景圖片 -->
+    <div class="absolute inset-0 bg-cover bg-center z-0 opacity-30" style="background-image: url('/img/hero-bg.jpg')"></div>
+    
+    <!-- 中央內容 -->
+    <div class="z-10 text-center max-w-2xl px-4">
+      <h1 class="text-5xl font-bold text-white mb-4">一段文字大標</h1>
+      <p class="text-xl text-gray-300 mb-8">還有一些次要文案、跟一些華而不實的文字們（應該）</p>
+    </div>
+    
+    <!-- 向下滾動按鈕 -->
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10">
+      <button id="scroll-down" class="bg-white rounded-full px-6 py-2 text-black font-bold hover:bg-opacity-90 transition-all">
+        SCROLL
+      </button>
+    </div>
+  </main>
+
+  <!-- 內容區塊 -->
+  <section id="content-section" class="bg-gray-100 py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12 text-black">企業簡介</h2>
+      
+      <div class="max-w-4xl mx-auto">
+        <p class="text-lg mb-6 text-black">
+          青山依舊在，幾度夕陽紅。慣看秋月春風。一壺濁酒喜相逢，浪花淘盡英雄。是非成敗轉頭空，滾滾長江東逝水，白髮漁樵江渚上，古今多少事，都付笑談中。
+        </p>
+        <p class="text-lg mb-6 text-black">
+          青山依舊在，幾度夕陽紅。慣看秋月春風。一壺濁酒喜相逢，浪花淘盡英雄。是非成敗轉頭空，滾滾長江東逝水，白髮漁樵江渚上，古今多少事，都付笑談中。
+        </p>
+        <div class="slider-container relative max-w-4xl mx-auto h-80 bg-gray-700 rounded-xl overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <p class="text-white text-xl">圖片自動更換(slide effect)</p>
+            </div>
+            
+            <!-- 輪播控制點 -->
+            <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
+              <button class="w-3 h-3 rounded-full bg-white"></button>
+              <button class="w-3 h-3 rounded-full bg-gray-400"></button>
+              <button class="w-3 h-3 rounded-full bg-gray-400"></button>
+            </div>
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 圖片自動輪播區塊 -->
+  <section class="py-20 bg-gray-800">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-gray-300 text-center mb-6">產品介紹</h2>
+        <div class="w-16 h-1 bg-gray-500 mx-auto mb-12"></div>
+        
+        <div class="max-w-4xl mx-auto text-center mb-16">
+          <p class="text-lg text-gray-300 leading-relaxed">
+            青山依舊在，幾度夕陽紅。慣看秋月春風。一壺濁酒喜相逢，浪花淘盡英雄。是非成敗轉頭空，滾滾長江東逝水，白髮漁樵江渚上，古今多少事，都付笑談中。
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <!-- 左側產品圖片輪播 (佔3列) -->
+            <div class="col-span-1 lg:col-span-3">
+              <!-- 輪播容器 -->
+              <div class="carousel-container w-full h-96 bg-gray-800 rounded-lg overflow-hidden relative">
+                <!-- 輪播項目 (這裡示範三張圖片) -->
+                <div class="carousel-item absolute inset-0 opacity-100 transition-opacity duration-1000 flex items-center justify-center bg-gray-700 rounded-lg">
+                  <p class="text-white text-2xl">產品圖片 1</p>
+                </div>
+                <div class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 flex items-center justify-center bg-gray-600 rounded-lg">
+                  <p class="text-white text-2xl">產品圖片 2</p>
+                </div>
+                <div class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 flex items-center justify-center bg-gray-500 rounded-lg">
+                  <p class="text-white text-2xl">產品圖片 3</p>
+                </div>
+                
+                <!-- 輪播控制點 -->
+                <div class="absolute bottom-6 left-0 right-0 flex justify-center space-x-3">
+                  <button data-slide="0" class="carousel-dot w-4 h-4 rounded-full bg-white"></button>
+                  <button data-slide="1" class="carousel-dot w-4 h-4 rounded-full bg-gray-400"></button>
+                  <button data-slide="2" class="carousel-dot w-4 h-4 rounded-full bg-gray-400"></button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 右側色塊與產品特色 (佔2列) -->
+            <div class="col-span-1 lg:col-span-2 flex flex-col justify-between">
+              <!-- 色塊組合 -->
+              <div class="color-blocks-container flex h-64 rounded-lg overflow-hidden">
+                <div class="w-full h-full bg-gray-200"></div>
+                <div class="w-full h-full bg-gray-300"></div>
+                <div class="w-full h-full bg-gray-400"></div>
+                <div class="w-full h-full bg-gray-500"></div>
+                <div class="w-full h-full bg-gray-600"></div>
+                <div class="w-full h-full bg-gray-700"></div>
+                <div class="w-full h-full bg-gray-800"></div>
+              </div>
+              
+              <!-- 產品特色標題 -->
+              <div class="text-right mt-4">
+                <h3 class="text-2xl font-bold text-gray-700">產品特色</h3>
+              </div>
+            </div>
+          </div>
+    </div>
+  </section>
+
+  <!-- 服務領域區塊 -->
+  <section class="py-20 bg-gray-100">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12 text-black">服務領域</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[1, 2, 3].map(i => (
+          <div class="service-card p-6 border border-gray-300 rounded-lg hover:shadow-lg transition-all">
+            <div class="w-full h-40 bg-gray-300 rounded-lg mb-4"></div>
+            <h3 class="text-xl font-semibold mb-2 text-black">服務項目 {i}</h3>
+            <p class="text-gray-600">服務項目的簡短描述，介紹主要特點和優勢。</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 聯絡我們區塊 -->
+  <section class="py-20 bg-gray-800 text-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">聯絡我們</h2>
+      
+      <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div>
+          <h3 class="text-xl font-semibold mb-4">聯絡資訊</h3>
+          <div class="space-y-4">
+            <p class="flex items-center">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+              台北市中山區南京東路二段123號8樓
+            </p>
+            <p class="flex items-center">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+              </svg>
+              (02) 2345-6789
+            </p>
+            <p class="flex items-center">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              contact@company.com
+            </p>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-xl font-semibold mb-4">傳送訊息</h3>
+          <form class="space-y-4">
+            <div>
+              <input type="text" placeholder="姓名" class="w-full p-2 rounded bg-gray-700 text-white">
+            </div>
+            <div>
+              <input type="email" placeholder="電子郵件" class="w-full p-2 rounded bg-gray-700 text-white">
+            </div>
+            <div>
+              <textarea rows="4" placeholder="訊息內容" class="w-full p-2 rounded bg-gray-700 text-white"></textarea>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
+              送出
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁腳 -->
+  <footer class="bg-black text-gray-400 py-8">
+    <div class="container mx-auto px-4 text-center">
+      <p>© 2025 公司名稱 版權所有</p>
+    </div>
+  </footer>
+</Layout>
+
+<script>
+    // 滾動按鈕功能與圖片輪播功能合併
+    document.addEventListener('DOMContentLoaded', () => {
+      // 原有的滾動按鈕功能
+      const scrollButton = document.getElementById('scroll-down');
+      const contentSection = document.getElementById('content-section');
+      if (scrollButton && contentSection) {
+        scrollButton.addEventListener('click', () => {
+          contentSection.scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+      
+      // 也檢查 products-section (為了兼容兩種可能的 ID)
+      const productsSection = document.getElementById('products-section');
+      if (scrollButton && productsSection && !contentSection) {
+        scrollButton.addEventListener('click', () => {
+          productsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+      
+      // 新增的圖片輪播功能
+      const carouselItems = document.querySelectorAll('.carousel-item');
+      const carouselDots = document.querySelectorAll('.carousel-dot');
+      
+      // 只有在找到輪播元素時才初始化輪播功能
+      if (carouselItems.length > 0 && carouselDots.length > 0) {
+        let currentSlide = 0;
+        let autoSlideInterval = setInterval(autoSlide, 5000);
+        
+        // 初始化輪播控制點點擊事件
+        carouselDots.forEach((dot, index) => {
+          dot.addEventListener('click', () => {
+            showSlide(index);
+          });
+        });
+        
+        // 顯示指定的輪播項目
+        function showSlide(index: number) {
+          // 隱藏所有輪播項目
+          carouselItems.forEach(item => {
+            item.classList.remove('opacity-100');
+            item.classList.add('opacity-0');
+          });
+          
+          // 重置所有控制點
+          carouselDots.forEach(dot => {
+            dot.classList.remove('bg-white');
+            dot.classList.add('bg-gray-400');
+          });
+          
+          // 顯示指定輪播項目
+          carouselItems[index].classList.remove('opacity-0');
+          carouselItems[index].classList.add('opacity-100');
+          
+          // 高亮顯示對應控制點
+          carouselDots[index].classList.remove('bg-gray-400');
+          carouselDots[index].classList.add('bg-white');
+          
+          // 更新當前輪播項目索引
+          currentSlide = index;
+        }
+        
+        // 自動輪播
+        function autoSlide() {
+          let nextSlide = (currentSlide + 1) % carouselItems.length;
+          showSlide(nextSlide);
+        }
+        
+        // 設置自動輪播定時器 (每5秒切換一次)
+        autoSlideInterval = setInterval(autoSlide, 5000);
+        
+        // 當鼠標懸停在輪播上時暫停自動輪播
+        const carouselContainer = document.querySelector('.carousel-container');
+        if (carouselContainer) {
+          carouselContainer.addEventListener('mouseenter', () => {
+            clearInterval(autoSlideInterval);
+          });
+          
+          carouselContainer.addEventListener('mouseleave', () => {
+            autoSlideInterval = setInterval(autoSlide, 5000);
+          });
+        }
+      }
+    });
+  </script>

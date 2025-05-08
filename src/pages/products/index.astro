@@ -1,0 +1,71 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import Footer from '../../components/Footer.astro';
+
+// 定義頁面元數據
+const pageTitle = "產品介紹 | 公司名稱";
+
+// 模擬產品數據
+const products = [
+    { id: 1, name: "產品一", image: "/img/product1.jpg", description: "產品一的詳細介紹..." },
+    { id: 2, name: "產品二", image: "/img/product2.jpg", description: "產品二的詳細介紹..." },
+    { id: 3, name: "產品三", image: "/img/product3.jpg", description: "產品三的詳細介紹..." },
+    { id: 4, name: "產品四", image: "/img/product4.jpg", description: "產品四的詳細介紹..." }
+];
+---
+
+<Layout title={pageTitle}>
+    <!-- 固定頂板 -->
+    <Navbar />
+    
+    <!-- 主要內容區域 -->
+    <main class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto border border-gray-600 rounded-2xl overflow-hidden shadow-2xl relative bg-black my-4">
+        
+        <!-- 左側側欄 -->
+        <div class="w-full lg:w-1/4 border-b lg:border-b-0 lg:border-r border-gray-600">
+            <Sidebar />
+        </div>
+        
+        <!-- 右側內容區 -->
+        <div class="w-full lg:w-3/4 p-6">
+            <h1 class="text-2xl font-bold text-white mb-6">產品介紹</h1>
+            
+            <!-- 產品類別選擇 -->
+            <div class="product-categories flex overflow-x-auto pb-4 mb-6 scrollbar-hide">
+                <button class="px-4 py-2 bg-primary text-black rounded-lg mr-2">所有產品</button>
+                <button class="px-4 py-2 bg-black text-white border border-gray-600 rounded-lg mr-2 hover:border-primary">類別一</button>
+                <button class="px-4 py-2 bg-black text-white border border-gray-600 rounded-lg mr-2 hover:border-primary">類別二</button>
+                <button class="px-4 py-2 bg-black text-white border border-gray-600 rounded-lg hover:border-primary">類別三</button>
+            </div>
+            
+            <!-- 產品列表 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {products.map(product => (
+                    <div class="product-card border border-gray-700 rounded-lg overflow-hidden hover:border-primary transition-all">
+                        <!-- 產品圖片 -->
+                        <div class="w-full h-48 bg-gray-800 relative">
+                            <!-- 圖片預留位置 -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <p class="text-white">產品圖片</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 產品資訊 -->
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold text-white mb-2">{product.name}</h3>
+                            <p class="text-gray-400 mb-4">{product.description}</p>
+                            <a href={`/products/${product.id}`} class="inline-block px-4 py-2 bg-black text-primary border border-primary rounded-lg hover:bg-primary hover:text-black transition-all">
+                                了解更多
+                            </a>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </main>
+
+    <!-- 頁腳 -->
+    <Footer />
+</Layout>
