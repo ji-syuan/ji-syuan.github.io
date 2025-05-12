@@ -3,7 +3,7 @@
 
 <div class="lang-switch">
   <button id="lang-toggle" aria-label="切換繁簡中文" title="切換繁簡中文">
-    繁 / 简
+    <span class="lang-trad">繁</span> / <span class="lang-simp">简</span>
   </button>
 </div>
 
@@ -15,7 +15,7 @@
   }
 
   #lang-toggle {
-    background-color: #D2D2D2;
+    background-color: #d2d2d2;
     color: #000000;
     border: none;
     border-radius: 9999px;
@@ -38,17 +38,49 @@
     transform: translateY(-1px);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
   }
+  
+  /* 語言選項樣式 */
+  .lang-trad, .lang-simp {
+    display: inline-block;
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+  }
+  
+  /* 預設繁體被選中 */
+  .lang-trad {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  
+  /* 簡體中文模式下的樣式 */
+  html.lang-simplified .lang-trad {
+    text-decoration: none;
+  }
+  
+  html.lang-simplified .lang-simp {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 </style>
 
 <script is:inline>
+  // 確保在頁面載入完成後執行
   document.addEventListener('DOMContentLoaded', () => {
-    // 確保 OpenCC 已載入
-    if (typeof OpenCC === 'undefined') {
-      console.error('OpenCC 庫未載入，嘗試動態載入');
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js';
-      script.onload = initLangSwitch;
-      document.head.appendChild(script);
+    // 檢查 OpenCC 是否已載入
+    if (typeof window.OpenCC === 'undefined') {
+      console.error('OpenCC 未定義，載入 OpenCC 庫');
+      
+      // 如果 OpenCC 未載入，動態載入它
+      const openccScript = document.createElement('script');
+      openccScript.src = 'https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js';
+      openccScript.onload = () => {
+        console.log('OpenCC 庫已成功載入');
+        initLangSwitch();
+      };
+      openccScript.onerror = () => {
+        console.error('無法載入 OpenCC 庫');
+      };
+      document.head.appendChild(openccScript);
     } else {
       console.log('OpenCC 已載入');
       initLangSwitch();
@@ -57,45 +89,38 @@
 
   function initLangSwitch() {
     const langToggle = document.getElementById('lang-toggle');
+    const langTrad = document.querySelector('.lang-trad');
+    const langSimp = document.querySelector('.lang-simp');
+    
     if (!langToggle) {
       console.error('找不到語言切換按鈕');
       return;
     }
-
-    const langKey = 'preferred-lang';
-    const storedLang = localStorage.getItem(langKey);
     
-    // 直接測試 OpenCC 轉換功能
-    try {
-      const testConverter = OpenCC.Converter({ from: 'tw', to: 'cn' });
-      const testResult = testConverter('繁體中文測試');
-      console.log('OpenCC 測試結果:', testResult);
-      if (testResult === '繁體中文測試') {
-        console.error('OpenCC 轉換測試失敗');
-      }
-    } catch (error) {
-      console.error('OpenCC 轉換測試發生錯誤:', error);
-    }
-
-    // 設置初始語言
+    console.log('找到語言切換按鈕');
+    const langKey = 'preferred-lang';
+    
+    // 檢查本地存儲的語言偏好
+    const storedLang = localStorage.getItem(langKey);
+    console.log('存儲的語言偏好:', storedLang);
+    
+    // 如果有存儲的語言偏好，應用它
     if (storedLang === 'simplified') {
-      langToggle.textContent = '简 / 繁';
       document.documentElement.classList.add('lang-simplified');
-      setTimeout(convertPageToSimplified, 100); // 延遲執行以確保全部加載
-    } else {
-      langToggle.textContent = '繁 / 简';
+      console.log('應用存儲的簡體中文偏好');
+      setTimeout(convertPageToSimplified, 100);
     }
-
-    // 點擊事件
-    langToggle.addEventListener('click', () => {
-      const isCurrentlySimplified = document.documentElement.classList.toggle('lang-simplified');
+    
+    // 語言切換按鈕的點擊事件
+    langToggle.addEventListener('click', function() {
+      console.log('按鈕被點擊');
+      const isSimplified = document.documentElement.classList.toggle('lang-simplified');
+      console.log('切換為簡體中文:', isSimplified);
       
-      if (isCurrentlySimplified) {
-        langToggle.textContent = '简 / 繁';
+      if (isSimplified) {
         localStorage.setItem(langKey, 'simplified');
         convertPageToSimplified();
       } else {
-        langToggle.textContent = '繁 / 简';
         localStorage.setItem(langKey, 'traditional');
         convertPageToTraditional();
       }
@@ -105,53 +130,61 @@
   // 繁體轉簡體
   function convertPageToSimplified() {
     try {
-      const converter = OpenCC.Converter({ from: 'tw', to: 'cn' });
-      console.log('開始繁體轉簡體');
-      
-      // 轉換頁面上的文本
-      const textNodes = [];
-      const walk = document.createTreeWalker(
-        document.body, 
-        NodeFilter.SHOW_TEXT, 
-        { 
-          acceptNode: (node) => {
-            if (!node.parentElement) return NodeFilter.FILTER_REJECT;
-            
-            // 忽略腳本、樣式和程式碼區塊
-            const parent = node.parentElement;
-            if (parent.tagName === 'SCRIPT' || 
-                parent.tagName === 'STYLE' || 
-                parent.tagName === 'PRE' || 
-                parent.tagName === 'CODE' || 
-                parent.id === 'lang-toggle' ||
-                parent.classList.contains('astro-code')) {
-              return NodeFilter.FILTER_REJECT;
+      if (typeof window.OpenCC !== 'undefined') {
+        const converter = window.OpenCC.Converter({ from: 'tw', to: 'cn' });
+        console.log('開始繁體轉簡體');
+        
+        // 獲取所有文本節點
+        const textNodes = [];
+        const walk = document.createTreeWalker(
+          document.body, 
+          NodeFilter.SHOW_TEXT, 
+          { 
+            acceptNode: (node) => {
+              // 檢查節點是否有文本
+              if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+              
+              // 檢查父元素是否存在
+              if (!node.parentElement) return NodeFilter.FILTER_REJECT;
+              
+              // 忽略腳本、樣式和代碼塊
+              const parent = node.parentElement;
+              const tagName = parent.tagName.toUpperCase();
+              
+              if (tagName === 'SCRIPT' || 
+                  tagName === 'STYLE' || 
+                  tagName === 'PRE' || 
+                  tagName === 'CODE' || 
+                  parent.classList.contains('lang-trad') ||
+                  parent.classList.contains('lang-simp')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              
+              return NodeFilter.FILTER_ACCEPT;
             }
-            
-            // 只處理有實際文本內容的節點
-            return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
           }
+        );
+        
+        let node;
+        while (node = walk.nextNode()) {
+          textNodes.push(node);
         }
-      );
-      
-      let node;
-      while(node = walk.nextNode()) {
-        textNodes.push(node);
+        
+        console.log(`找到 ${textNodes.length} 個文本節點進行轉換`);
+        
+        // 轉換所有符合條件的文本節點
+        textNodes.forEach(node => {
+          const original = node.nodeValue;
+          const converted = converter(original);
+          if (original !== converted) {
+            node.nodeValue = converted;
+          }
+        });
+        
+        console.log('繁體轉簡體完成');
+      } else {
+        console.error('OpenCC 尚未定義');
       }
-      
-      console.log(`找到 ${textNodes.length} 個文本節點進行轉換`);
-      
-      // 轉換所有文本節點
-      textNodes.forEach(node => {
-        const originalText = node.textContent;
-        const convertedText = converter(originalText);
-        if (originalText !== convertedText) {
-          console.log(`轉換: "${originalText}" -> "${convertedText}"`);
-          node.textContent = convertedText;
-        }
-      });
-      
-      console.log('繁體轉簡體完成');
     } catch (error) {
       console.error('繁體轉簡體出錯:', error);
     }
@@ -160,53 +193,61 @@
   // 簡體轉繁體
   function convertPageToTraditional() {
     try {
-      const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
-      console.log('開始簡體轉繁體');
-      
-      // 轉換頁面上的文本
-      const textNodes = [];
-      const walk = document.createTreeWalker(
-        document.body, 
-        NodeFilter.SHOW_TEXT, 
-        { 
-          acceptNode: (node) => {
-            if (!node.parentElement) return NodeFilter.FILTER_REJECT;
-            
-            // 忽略腳本、樣式和程式碼區塊
-            const parent = node.parentElement;
-            if (parent.tagName === 'SCRIPT' || 
-                parent.tagName === 'STYLE' || 
-                parent.tagName === 'PRE' || 
-                parent.tagName === 'CODE' || 
-                parent.id === 'lang-toggle' ||
-                parent.classList.contains('astro-code')) {
-              return NodeFilter.FILTER_REJECT;
+      if (typeof window.OpenCC !== 'undefined') {
+        const converter = window.OpenCC.Converter({ from: 'cn', to: 'tw' });
+        console.log('開始簡體轉繁體');
+        
+        // 獲取所有文本節點
+        const textNodes = [];
+        const walk = document.createTreeWalker(
+          document.body, 
+          NodeFilter.SHOW_TEXT, 
+          { 
+            acceptNode: (node) => {
+              // 檢查節點是否有文本
+              if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+              
+              // 檢查父元素是否存在
+              if (!node.parentElement) return NodeFilter.FILTER_REJECT;
+              
+              // 忽略腳本、樣式和代碼塊
+              const parent = node.parentElement;
+              const tagName = parent.tagName.toUpperCase();
+              
+              if (tagName === 'SCRIPT' || 
+                  tagName === 'STYLE' || 
+                  tagName === 'PRE' || 
+                  tagName === 'CODE' || 
+                  parent.classList.contains('lang-trad') ||
+                  parent.classList.contains('lang-simp')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              
+              return NodeFilter.FILTER_ACCEPT;
             }
-            
-            // 只處理有實際文本內容的節點
-            return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
           }
+        );
+        
+        let node;
+        while (node = walk.nextNode()) {
+          textNodes.push(node);
         }
-      );
-      
-      let node;
-      while(node = walk.nextNode()) {
-        textNodes.push(node);
+        
+        console.log(`找到 ${textNodes.length} 個文本節點進行轉換`);
+        
+        // 轉換所有符合條件的文本節點
+        textNodes.forEach(node => {
+          const original = node.nodeValue;
+          const converted = converter(original);
+          if (original !== converted) {
+            node.nodeValue = converted;
+          }
+        });
+        
+        console.log('簡體轉繁體完成');
+      } else {
+        console.error('OpenCC 尚未定義');
       }
-      
-      console.log(`找到 ${textNodes.length} 個文本節點進行轉換`);
-      
-      // 轉換所有文本節點
-      textNodes.forEach(node => {
-        const originalText = node.textContent;
-        const convertedText = converter(originalText);
-        if (originalText !== convertedText) {
-          console.log(`轉換: "${originalText}" -> "${convertedText}"`);
-          node.textContent = convertedText;
-        }
-      });
-      
-      console.log('簡體轉繁體完成');
     } catch (error) {
       console.error('簡體轉繁體出錯:', error);
     }
