@@ -3,3 +3,14 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+/* 繁簡語言切換樣式 */
+html.lang-simplified .lang-text::after {
+    content: " (简)";
+    font-size: 0.8em;
+  }
+  
+  html:not(.lang-simplified) .lang-text::after {
+    content: " (繁)";
+    font-size: 0.8em;
+  }

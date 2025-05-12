@@ -1,9 +1,11 @@
 ---
+import LangSwitch from "./LangSwitch.astro";
+
 const navItems = [
     { name: "首頁", url: "#" },
     { name: "產品介紹", url: "#" },
     { name: "服務領域", url: "#" },
-    { name: "聯絡我們", url: "#" }
+    { name: "聯絡我們", url: "#" },
 ];
 ---
 
@@ -15,56 +17,82 @@ const navItems = [
                 <div class="flex-shrink-0 flex items-center">
                     <span class="text-primary font-bold text-xl">LOGO</span>
                 </div>
-                
                 <!-- 主導航選項 - 桌面端 -->
                 <div class="hidden md:ml-6 md:flex md:space-x-8">
-                    {navItems.map(item => (
-                        <a href={item.url} class="px-3 py-2 text-sm font-medium hover:text-primary">
-                            {item.name}
-                        </a>
-                    ))}
+                    {
+                        navItems.map((item) => (
+                            <a
+                                href={item.url}
+                                class="px-3 py-2 text-sm font-medium hover:text-primary"
+                            >
+                                {item.name}
+                            </a>
+                        ))
+                    }
                 </div>
             </div>
-            
             <!-- 右側選項 -->
             <div class="flex items-center">
-                <button class="px-4 py-2 bg-primary text-black rounded-lg hover:bg-opacity-80 transition-all">
+                <!-- 語言切換按鈕 - 桌面端 -->
+                <div class="hidden md:block mr-4">
+                    <LangSwitch />
+                </div>
+                <button
+                    class="px-4 py-2 bg-primary text-black rounded-lg hover:bg-opacity-80 transition-all"
+                >
                     聯絡我們
                 </button>
-                
                 <!-- 行動版選單按鈕 -->
                 <div class="md:hidden ml-4">
-                    <button id="mobile-menu-button" class="text-gray-300 hover:text-white">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    <button
+                        id="mobile-menu-button"
+                        class="text-gray-300 hover:text-white"
+                    >
+                        <svg
+                            class="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    
     <!-- 行動版選單 -->
     <div id="mobile-menu" class="hidden md:hidden border-t border-gray-600">
         <div class="px-2 pt-2 pb-3 space-y-1">
-            {navItems.map(item => (
-                <a href={item.url} class="block px-3 py-2 text-base font-medium hover:text-primary">
-                    {item.name}
-                </a>
-            ))}
+            {
+                navItems.map((item) => (
+                    <a
+                        href={item.url}
+                        class="block px-3 py-2 text-base font-medium hover:text-primary"
+                    >
+                        {item.name}
+                    </a>
+                ))
+            }
+            <!-- 語言切換按鈕 - 行動版 -->
+            <div class="px-3 py-2">
+                <LangSwitch />
+            </div>
         </div>
     </div>
 </nav>
-
 <script>
     // 行動版選單切換
-    document.addEventListener('DOMContentLoaded', () => {
-        const menuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
+    document.addEventListener("DOMContentLoaded", () => {
+        const menuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
         if (menuButton && mobileMenu) {
-            menuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
+            menuButton.addEventListener("click", () => {
+                mobileMenu.classList.toggle("hidden");
             });
         }
     });

@@ -1,0 +1,214 @@
+---
+---
+
+<div class="lang-switch">
+  <button id="lang-toggle" aria-label="切換繁簡中文" title="切換繁簡中文">
+    繁 / 简
+  </button>
+</div>
+
+<style>
+  .lang-switch {
+    display: inline-flex;
+    position: relative;
+    z-index: 1000;
+  }
+
+  #lang-toggle {
+    background-color: #D2D2D2;
+    color: #000000;
+    border: none;
+    border-radius: 9999px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 80px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1000;
+    pointer-events: auto;
+  }
+
+  #lang-toggle:hover {
+    background-color: #f1f1f1;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 確保 OpenCC 已載入
+    if (typeof OpenCC === 'undefined') {
+      console.error('OpenCC 庫未載入，嘗試動態載入');
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js';
+      script.onload = initLangSwitch;
+      document.head.appendChild(script);
+    } else {
+      console.log('OpenCC 已載入');
+      initLangSwitch();
+    }
+  });
+
+  function initLangSwitch() {
+    const langToggle = document.getElementById('lang-toggle');
+    if (!langToggle) {
+      console.error('找不到語言切換按鈕');
+      return;
+    }
+
+    const langKey = 'preferred-lang';
+    const storedLang = localStorage.getItem(langKey);
+    
+    // 直接測試 OpenCC 轉換功能
+    try {
+      const testConverter = OpenCC.Converter({ from: 'tw', to: 'cn' });
+      const testResult = testConverter('繁體中文測試');
+      console.log('OpenCC 測試結果:', testResult);
+      if (testResult === '繁體中文測試') {
+        console.error('OpenCC 轉換測試失敗');
+      }
+    } catch (error) {
+      console.error('OpenCC 轉換測試發生錯誤:', error);
+    }
+
+    // 設置初始語言
+    if (storedLang === 'simplified') {
+      langToggle.textContent = '简 / 繁';
+      document.documentElement.classList.add('lang-simplified');
+      setTimeout(convertPageToSimplified, 100); // 延遲執行以確保全部加載
+    } else {
+      langToggle.textContent = '繁 / 简';
+    }
+
+    // 點擊事件
+    langToggle.addEventListener('click', () => {
+      const isCurrentlySimplified = document.documentElement.classList.toggle('lang-simplified');
+      
+      if (isCurrentlySimplified) {
+        langToggle.textContent = '简 / 繁';
+        localStorage.setItem(langKey, 'simplified');
+        convertPageToSimplified();
+      } else {
+        langToggle.textContent = '繁 / 简';
+        localStorage.setItem(langKey, 'traditional');
+        convertPageToTraditional();
+      }
+    });
+  }
+
+  // 繁體轉簡體
+  function convertPageToSimplified() {
+    try {
+      const converter = OpenCC.Converter({ from: 'tw', to: 'cn' });
+      console.log('開始繁體轉簡體');
+      
+      // 轉換頁面上的文本
+      const textNodes = [];
+      const walk = document.createTreeWalker(
+        document.body, 
+        NodeFilter.SHOW_TEXT, 
+        { 
+          acceptNode: (node) => {
+            if (!node.parentElement) return NodeFilter.FILTER_REJECT;
+            
+            // 忽略腳本、樣式和程式碼區塊
+            const parent = node.parentElement;
+            if (parent.tagName === 'SCRIPT' || 
+                parent.tagName === 'STYLE' || 
+                parent.tagName === 'PRE' || 
+                parent.tagName === 'CODE' || 
+                parent.id === 'lang-toggle' ||
+                parent.classList.contains('astro-code')) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            
+            // 只處理有實際文本內容的節點
+            return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+          }
+        }
+      );
+      
+      let node;
+      while(node = walk.nextNode()) {
+        textNodes.push(node);
+      }
+      
+      console.log(`找到 ${textNodes.length} 個文本節點進行轉換`);
+      
+      // 轉換所有文本節點
+      textNodes.forEach(node => {
+        const originalText = node.textContent;
+        const convertedText = converter(originalText);
+        if (originalText !== convertedText) {
+          console.log(`轉換: "${originalText}" -> "${convertedText}"`);
+          node.textContent = convertedText;
+        }
+      });
+      
+      console.log('繁體轉簡體完成');
+    } catch (error) {
+      console.error('繁體轉簡體出錯:', error);
+    }
+  }
+
+  // 簡體轉繁體
+  function convertPageToTraditional() {
+    try {
+      const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
+      console.log('開始簡體轉繁體');
+      
+      // 轉換頁面上的文本
+      const textNodes = [];
+      const walk = document.createTreeWalker(
+        document.body, 
+        NodeFilter.SHOW_TEXT, 
+        { 
+          acceptNode: (node) => {
+            if (!node.parentElement) return NodeFilter.FILTER_REJECT;
+            
+            // 忽略腳本、樣式和程式碼區塊
+            const parent = node.parentElement;
+            if (parent.tagName === 'SCRIPT' || 
+                parent.tagName === 'STYLE' || 
+                parent.tagName === 'PRE' || 
+                parent.tagName === 'CODE' || 
+                parent.id === 'lang-toggle' ||
+                parent.classList.contains('astro-code')) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            
+            // 只處理有實際文本內容的節點
+            return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+          }
+        }
+      );
+      
+      let node;
+      while(node = walk.nextNode()) {
+        textNodes.push(node);
+      }
+      
+      console.log(`找到 ${textNodes.length} 個文本節點進行轉換`);
+      
+      // 轉換所有文本節點
+      textNodes.forEach(node => {
+        const originalText = node.textContent;
+        const convertedText = converter(originalText);
+        if (originalText !== convertedText) {
+          console.log(`轉換: "${originalText}" -> "${convertedText}"`);
+          node.textContent = convertedText;
+        }
+      });
+      
+      console.log('簡體轉繁體完成');
+    } catch (error) {
+      console.error('簡體轉繁體出錯:', error);
+    }
+  }
+</script>
