@@ -1,12 +1,11 @@
 import { defineConfig } from 'astro/config';
-
 import tailwind from '@astrojs/tailwind';
 import compress from 'astro-compress';
 import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
 
 export default defineConfig({
-    output: 'server',
+    output: 'server',  // 改為 server 模式
     trailingSlash: 'always',
     site: 'https://ji-syuan.github.io',
     base: '/',
@@ -24,12 +23,10 @@ export default defineConfig({
             HTML: {
                 "html-minifier-terser": {
                     collapseWhitespace: true,
-                    // collapseInlineTagWhitespace: true, // It breaks display-inline / flex-inline text
                     minifyCSS: true,
                     minifyJS: true,
                     removeComments: true,
                     removeEmptyAttributes: true,
-                    // removeEmptyElements: true, // It removes sometimes SVGs
                     removeRedundantAttributes: true
                 },
             },
@@ -45,9 +42,9 @@ export default defineConfig({
     ],
     adapter: node({
         mode: 'standalone'
-      }),
+    }),
     server: {
-        port: 4321, // 可以嘗試更改端口號
-        host: true, // 監聽所有網絡接口，而不僅僅是 localhost
-      },
+        port: 4321,
+        host: true,
+    },
 });

@@ -196,82 +196,124 @@ import Layout from "../layouts/Layout.astro";
 <!-- 聯絡我們區塊 -->
 <section class="py-20 bg-gray-800 text-white relative">
   <!-- 大型Contact us標題在左下角 (更靠左) -->
-  <div class="absolute bottom-2 left-0 contact-title font-sans mb-[-20px]" style="line-height: 0.8;">
-      <h2 class="text-6xl lg:text-9xl font-bold text-gray-100 pl-0 lg:pl-0">Contact us</h2>
+  <div
+    class="absolute bottom-2 left-0 contact-title font-sans mb-[-20px]"
+    style="line-height: 0.8;"
+  >
+    <h2 class="text-6xl lg:text-9xl font-bold text-gray-100 pl-0 lg:pl-0">
+      Contact us
+    </h2>
   </div>
-  
+
   <div class="container mx-auto px-4">
     <!-- <h2 class="text-3xl font-bold text-center mb-12">聯絡我們</h2> -->
-    
+
     <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
       <div>
         <h3 class="text-xl font-semibold mb-4">聯絡資訊</h3>
         <div class="space-y-4">
           <p class="flex items-center">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <svg
+              class="w-5 h-5 mr-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
             台北市中山區南京東路二段123號8樓
           </p>
           <p class="flex items-center">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+            <svg
+              class="w-5 h-5 mr-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+              ></path>
             </svg>
             (02) 2345-6789
           </p>
           <p class="flex items-center">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            <svg
+              class="w-5 h-5 mr-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              ></path>
             </svg>
             contact@company.com
           </p>
         </div>
       </div>
-      
+
       <div>
         <h3 class="text-xl font-semibold mb-4">傳送訊息</h3>
-        <form id="home-contact-form" action="/api/send-email" method="POST" class="space-y-4">
+        <form id="home-contact-form" class="space-y-4">
           <div>
-            <input 
-              type="text" 
-              id="home-name" 
-              name="name" 
-              placeholder="姓名" 
+            <input
+              type="text"
+              id="home-name"
+              name="name"
+              placeholder="姓名"
               class="w-full p-2 rounded bg-gray-700 text-white"
               required
-            >
+            />
           </div>
           <div>
-            <input 
-              type="email" 
-              id="home-email" 
-              name="email" 
-              placeholder="電子郵件" 
+            <input
+              type="email"
+              id="home-email"
+              name="email"
+              placeholder="電子郵件"
               class="w-full p-2 rounded bg-gray-700 text-white"
               required
-            >
+            />
           </div>
           <div>
-            <textarea 
-              id="home-message" 
-              name="message" 
-              rows="4" 
-              placeholder="訊息內容" 
+            <textarea
+              id="home-message"
+              name="message"
+              rows="4"
+              placeholder="訊息內容"
               class="w-full p-2 rounded bg-gray-700 text-white"
-              required
-            ></textarea>
+              required></textarea>
           </div>
-          
+
           <div id="home-form-status" class="hidden">
-            <p id="home-success-message" class="text-green-400 hidden">訊息已成功發送！我們將盡快回覆您。</p>
-            <p id="home-error-message" class="text-red-400 hidden">發送訊息時出錯，請稍後再試。</p>
+            <p id="home-success-message" class="text-green-400 hidden">
+              訊息已成功發送！我們將盡快回覆您。
+            </p>
+            <p id="home-error-message" class="text-red-400 hidden">
+              發送訊息時出錯，請稍後再試。
+            </p>
           </div>
-          
-          <button 
-            type="submit" 
-            id="home-submit-button" 
-            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors form-submit-transition"
+
+          <button
+            type="submit"
+            id="home-submit-button"
+            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
           >
             送出
           </button>
@@ -495,85 +537,72 @@ import Layout from "../layouts/Layout.astro";
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('contact-form');
-    const submitButton = document.getElementById('submit-button');
-    const formStatus = document.getElementById('form-status');
-    const successMessage = document.getElementById('success-message');
-    const errorMessage = document.getElementById('error-message');
-    
-    if (form) {
-      form.addEventListener('submit', async (e) => {
+  document.addEventListener("DOMContentLoaded", () => {
+    const homeForm = document.getElementById("home-contact-form");
+    const homeSubmitButton = document.getElementById("home-submit-button");
+    const homeFormStatus = document.getElementById("home-form-status");
+    const homeSuccessMessage = document.getElementById("home-success-message");
+    const homeErrorMessage = document.getElementById("home-error-message");
+
+    if (homeForm) {
+      homeForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        
+
         // 禁用提交按鈕
-        if (submitButton) {
-          submitButton.disabled = true;
-          submitButton.textContent = '發送中...';
+        if (homeSubmitButton) {
+          homeSubmitButton.disabled = true;
+          homeSubmitButton.textContent = "發送中...";
         }
-        
-        try {
-          // 獲取表單數據
-          const formData = {
-            name: form.name.value,
-            email: form.email.value,
-            subject: form.subject ? form.subject.value : '網站聯繫表單',
-            message: form.message.value
-          };
-          
-          console.log('提交的表單數據:', formData);
-          
-          // 發送請求
-          const response = await fetch('/api/send-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
+
+        // 獲取表單數據
+        const formData = new FormData(homeForm);
+
+        // 發送請求
+        fetch("/api/send-email", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            // 顯示結果
+            if (homeFormStatus) homeFormStatus.classList.remove("hidden");
+
+            if (result.success) {
+              // 成功
+              if (homeSuccessMessage) {
+                homeSuccessMessage.classList.remove("hidden");
+                homeErrorMessage.classList.add("hidden");
+              }
+
+              // 重置表單
+              homeForm.reset();
+            } else {
+              // 錯誤
+              if (homeErrorMessage) {
+                homeErrorMessage.textContent =
+                  result.message || "發送訊息時出錯，請稍後再試。";
+                homeErrorMessage.classList.remove("hidden");
+                homeSuccessMessage.classList.add("hidden");
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("表單提交錯誤:", error);
+
+            if (homeFormStatus) homeFormStatus.classList.remove("hidden");
+            if (homeErrorMessage) {
+              homeErrorMessage.textContent = "發送訊息時出錯，請稍後再試。";
+              homeErrorMessage.classList.remove("hidden");
+              homeSuccessMessage.classList.add("hidden");
+            }
+          })
+          .finally(() => {
+            // 恢復提交按鈕
+            if (homeSubmitButton) {
+              homeSubmitButton.disabled = false;
+              homeSubmitButton.textContent = "送出";
+            }
           });
-          
-          console.log('API響應狀態:', response.status);
-          
-          // 解析響應
-          const result = await response.json();
-          console.log('API響應數據:', result);
-          
-          // 顯示結果
-          if (formStatus) formStatus.classList.remove('hidden');
-          
-          if (result.success) {
-            // 成功
-            if (successMessage) {
-              successMessage.classList.remove('hidden');
-              errorMessage.classList.add('hidden');
-            }
-            // 重置表單
-            form.reset();
-          } else {
-            // 錯誤
-            if (errorMessage) {
-              errorMessage.textContent = result.message || '發送訊息時出錯，請稍後再試。';
-              errorMessage.classList.remove('hidden');
-              successMessage.classList.add('hidden');
-            }
-          }
-        } catch (error) {
-          // 處理錯誤
-          console.error('表單提交錯誤:', error);
-          
-          if (formStatus) formStatus.classList.remove('hidden');
-          if (errorMessage) {
-            errorMessage.textContent = '發送訊息時出錯，請稍後再試。';
-            errorMessage.classList.remove('hidden');
-            successMessage.classList.add('hidden');
-          }
-        } finally {
-          // 恢復提交按鈕
-          if (submitButton) {
-            submitButton.disabled = false;
-            submitButton.textContent = '送出訊息';
-          }
-        }
       });
     }
   });

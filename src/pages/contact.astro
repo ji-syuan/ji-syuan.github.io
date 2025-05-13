@@ -181,21 +181,13 @@ const pageTitle = "聯絡我們 | 公司名稱";
         }
         
         // 獲取表單數據
-        const formData = {
-          name: form.name.value,
-          email: form.email.value,
-          subject: form.subject.value,
-          message: form.message.value
-        };
+        const formData = new FormData(form);
         
         try {
           // 發送請求
           const response = await fetch('/api/send-email', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
+            body: formData
           });
           
           const result = await response.json();
