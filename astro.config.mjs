@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
 
 export default defineConfig({
-    output: 'server',  // 改為 server 模式
+    output: 'static',  // 改為 server 模式
     trailingSlash: 'always',
     site: 'https://ji-syuan.github.io',
     base: '/',
@@ -40,11 +40,11 @@ export default defineConfig({
             }
         })
     ],
-    adapter: node({
-        mode: 'standalone'
-    }),
-    server: {
-        port: 4321,
-        host: true,
-    },
+    // adapter: node({
+    //     mode: 'standalone'
+    // }),
+    // server: {
+    //     port: 4321,
+    //     host: true,
+    // },
 });
