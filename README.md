@@ -1,3 +1,11 @@
+### 🔧 \[currently\] to-do list
+- [x] translation func tradition/simplify Chinese
+- [ ] contact area - send mail directly
+- [ ] wait (loading animation) 
+- [ ] hamburger menu for RWD
+- [ ] PageUp button
+
+### 🌳 tree of web project
 ```
 .
 ├── astro.config.mjs
