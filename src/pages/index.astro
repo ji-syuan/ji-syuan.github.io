@@ -20,29 +20,29 @@ import Layout from "../layouts/Layout.astro";
       <nav class="main-nav">
         <ul class="flex">
           <li>
-            <a
-              href="/about"
+            
+              <a href="/about"
               class="px-5 py-2 block text-white hover:text-blue-200 transition-colors"
               >認識我們</a
             >
           </li>
           <li>
-            <a
-              href="/products"
+            
+              <a href="/products"
               class="px-5 py-2 block text-white hover:text-blue-200 transition-colors"
               >產品介紹</a
             >
           </li>
           <li>
-            <a
-              href="/services"
+            
+              <a href="/services"
               class="px-5 py-2 block text-white hover:text-blue-200 transition-colors"
               >服務領域</a
             >
           </li>
           <li>
-            <a
-              href="/contact"
+            
+              <a href="/contact"
               class="px-5 py-2 block text-white hover:text-blue-200 transition-colors"
               >聯絡我們</a
             >
@@ -270,7 +270,7 @@ import Layout from "../layouts/Layout.astro";
 
       <div>
         <h3 class="text-xl font-semibold mb-4">傳送訊息</h3>
-        <form id="home-contact-form" class="space-y-4">
+        <form id="home-contact-form" action="https://formspree.io/f/xrgjaklb" method="POST" class="space-y-4">
           <div>
             <input
               type="text"
@@ -310,11 +310,7 @@ import Layout from "../layouts/Layout.astro";
             </p>
           </div>
 
-          <button
-            type="submit"
-            id="home-submit-button"
-            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
-          >
+          <button type="submit" id="home-submit-button" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
             送出
           </button>
         </form>
@@ -546,63 +542,14 @@ import Layout from "../layouts/Layout.astro";
 
     if (homeForm) {
       homeForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        // 禁用提交按鈕
+        // 不需要阻止默認提交行為，表單將直接提交到 Formspree
+        // Formspree 會處理表單提交和感謝頁面
+        
+        // 如果您想要顯示提交中的視覺反饋，可以保留這部分：
         if (homeSubmitButton) {
           homeSubmitButton.disabled = true;
           homeSubmitButton.textContent = "發送中...";
         }
-
-        // 獲取表單數據
-        const formData = new FormData(homeForm);
-
-        // 發送請求
-        fetch("/api/send-email", {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then((result) => {
-            // 顯示結果
-            if (homeFormStatus) homeFormStatus.classList.remove("hidden");
-
-            if (result.success) {
-              // 成功
-              if (homeSuccessMessage) {
-                homeSuccessMessage.classList.remove("hidden");
-                homeErrorMessage.classList.add("hidden");
-              }
-
-              // 重置表單
-              homeForm.reset();
-            } else {
-              // 錯誤
-              if (homeErrorMessage) {
-                homeErrorMessage.textContent =
-                  result.message || "發送訊息時出錯，請稍後再試。";
-                homeErrorMessage.classList.remove("hidden");
-                homeSuccessMessage.classList.add("hidden");
-              }
-            }
-          })
-          .catch((error) => {
-            console.error("表單提交錯誤:", error);
-
-            if (homeFormStatus) homeFormStatus.classList.remove("hidden");
-            if (homeErrorMessage) {
-              homeErrorMessage.textContent = "發送訊息時出錯，請稍後再試。";
-              homeErrorMessage.classList.remove("hidden");
-              homeSuccessMessage.classList.add("hidden");
-            }
-          })
-          .finally(() => {
-            // 恢復提交按鈕
-            if (homeSubmitButton) {
-              homeSubmitButton.disabled = false;
-              homeSubmitButton.textContent = "送出";
-            }
-          });
       });
     }
   });

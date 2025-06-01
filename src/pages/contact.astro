@@ -29,7 +29,7 @@ const pageTitle = "聯絡我們 | 公司名稱";
                 <div class="contact-form-container">
                     <h2 class="text-xl font-semibold text-white mb-4">傳送訊息</h2>
                     
-                    <form id="contact-form" class="space-y-4">
+                    <form id="contact-form" action="https://formspree.io/f/xrgjaklb" method="POST" class="space-y-4">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-300 mb-1">姓名</label>
                             <input 
@@ -76,11 +76,6 @@ const pageTitle = "聯絡我們 | 公司名稱";
                                 placeholder="請輸入您的訊息內容"
                                 required
                             ></textarea>
-                        </div>
-                        
-                        <div id="form-status" class="hidden">
-                            <p id="success-message" class="text-green-400 hidden">訊息已成功發送！我們將盡快回覆您。</p>
-                            <p id="error-message" class="text-red-400 hidden">發送訊息時出錯，請稍後再試。</p>
                         </div>
                         
                         <button 
@@ -161,101 +156,6 @@ const pageTitle = "聯絡我們 | 公司名稱";
     <!-- 頁腳 -->
     <Footer />
 </Layout>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('contact-form');
-    const submitButton = document.getElementById('submit-button');
-    const formStatus = document.getElementById('form-status');
-    const successMessage = document.getElementById('success-message');
-    const errorMessage = document.getElementById('error-message');
-    
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // 禁用提交按鈕並顯示加載狀態
-        if (submitButton) {
-          submitButton.disabled = true;
-          submitButton.innerHTML = '<span class="inline-block mr-2">發送中</span><svg class="animate-spin -mt-1 h-5 w-5 text-black inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
-        }
-        
-        // 獲取表單數據
-        const formData = new FormData(form);
-        
-        try {
-          // 發送請求
-          const response = await fetch('/api/send-email', {
-            method: 'POST',
-            body: formData
-          });
-          
-          const result = await response.json();
-          
-          // 顯示狀態
-          if (formStatus) formStatus.classList.remove('hidden');
-          
-          if (result.success) {
-            // 成功
-            if (successMessage) {
-              successMessage.classList.remove('hidden');
-              errorMessage.classList.add('hidden');
-            }
-            
-            // 添加成功動畫
-            form.classList.add('form-submit-success');
-            
-            // 重置表單
-            form.reset();
-            
-            // 3秒後隱藏成功訊息
-            setTimeout(() => {
-              if (formStatus) formStatus.classList.add('hidden');
-              if (successMessage) successMessage.classList.add('hidden');
-              form.classList.remove('form-submit-success');
-            }, 5000);
-          } else {
-            // 錯誤
-            if (errorMessage) {
-              errorMessage.textContent = result.message || '發送訊息時出錯，請稍後再試。';
-              errorMessage.classList.remove('hidden');
-              successMessage.classList.add('hidden');
-            }
-            
-            // 添加錯誤動畫
-            form.classList.add('form-submit-error');
-            
-            setTimeout(() => {
-              form.classList.remove('form-submit-error');
-            }, 1000);
-          }
-        } catch (error) {
-          // 處理錯誤
-          console.error('提交表單時出錯:', error);
-          if (formStatus) formStatus.classList.remove('hidden');
-          if (errorMessage) {
-            errorMessage.textContent = '發送訊息時出錯，請稍後再試。';
-            errorMessage.classList.remove('hidden');
-            successMessage.classList.add('hidden');
-          }
-          
-          // 添加錯誤動畫
-          form.classList.add('form-submit-error');
-          
-          setTimeout(() => {
-            form.classList.remove('form-submit-error');
-          }, 1000);
-        } finally {
-          // 恢復提交按鈕
-          if (submitButton) {
-            submitButton.disabled = false;
-            submitButton.innerText = '送出訊息';
-          }
-        }
-      });
-    }
-  });
-</script>
 
 <style>
   .form-submit-transition {
