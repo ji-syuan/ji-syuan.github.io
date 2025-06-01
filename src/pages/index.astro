@@ -1,7 +1,75 @@
 ---
 import Layout from "../layouts/Layout.astro";
----
 
+export const prerender = false;
+
+let errors = { name: "", email: "", message: "" };
+let successMessage = "";
+let errorMessage = "";
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const name = data.get("name") as string;
+    const email = data.get("email") as string;
+    const message = data.get("message") as string;
+
+    // 基本驗證
+    if (!name || name.trim().length < 2) {
+      errors.name = "請輸入有效的姓名";
+    }
+    
+    if (!email || !email.includes("@")) {
+      errors.email = "請輸入有效的電子郵件";
+    }
+    
+    if (!message || message.trim().length < 10) {
+      errors.message = "訊息內容至少需要10個字符";
+    }
+
+    // 檢查是否有錯誤
+    const hasErrors = Object.values(errors).some(error => error !== "");
+
+    if (!hasErrors) {
+      // 直接在這裡處理郵件發送
+      const nodemailer = await import("nodemailer");
+      
+      let transporter = nodemailer.default.createTransporter({
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT),
+        secure: false,
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      let emailMessage = {
+        from: process.env.EMAIL,
+        to: process.env.EMAIL,
+        subject: `網站聯絡表單 - 來自 ${name.trim()}`,
+        html: `
+          <h2>來自網站的聯絡訊息</h2>
+          <p><strong>姓名：</strong> ${name.trim()}</p>
+          <p><strong>電子郵件：</strong> ${email.trim()}</p>
+          <p><strong>訊息內容：</strong></p>
+          <p>${message.trim().replace(/\n/g, '<br>')}</p>
+        `,
+      };
+
+      await transporter.sendMail(emailMessage);
+      successMessage = "訊息已成功發送！我們將盡快回覆您。";
+      
+      // 清空錯誤訊息
+      errors = { name: "", email: "", message: "" };
+    }
+
+  } catch (error) {
+    console.error('Email sending error:', error);
+    errorMessage = "發送訊息時出錯，請稍後再試。";
+  }
+}
+---
 <Layout title="首頁 | 公司名稱">
   <!-- 頂部固定導航欄 -->
   <header class="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 py-4">
@@ -12,37 +80,31 @@ import Layout from "../layouts/Layout.astro";
       <!-- 左側 LOGO -->
       <div class="logo-container">
         <div class="text-white text-2xl font-bold">LOGO</div>
-        <!-- 替換為您的 LOGO 圖片 -->
-        <!-- <img src="/img/logo.svg" alt="公司 LOGO" class="h-10"> -->
       </div>
 
       <!-- 右側導航選單 -->
       <nav class="main-nav">
         <ul class="flex">
           <li>
-            
-              <a href="/about"
+            <a href="/about"
               class="px-5 py-2 block text-white hover:text-blue-200 transition-colors"
               >認識我們</a
             >
           </li>
           <li>
-            
-              <a href="/products"
+            <a href="/products"
               class="px-5 py-2 block text-white hover:text-blue-200 transition-colors"
               >產品介紹</a
             >
           </li>
           <li>
-            
-              <a href="/services"
+            <a href="/services"
               class="px-5 py-2 block text-white hover:text-blue-200 transition-colors"
               >服務領域</a
             >
           </li>
           <li>
-            
-              <a href="/contact"
+            <a href="/contact"
               class="px-5 py-2 block text-white hover:text-blue-200 transition-colors"
               >聯絡我們</a
             >
@@ -56,11 +118,6 @@ import Layout from "../layouts/Layout.astro";
   <main
     class="h-screen w-full bg-black flex flex-col justify-center items-center relative"
   >
-    <!-- 背景圖片 - 使用 Canvas 替代靜態圖片 -->
-    <div class="absolute inset-0 z-0">
-      <!-- <canvas id="colorSpotlight" class="w-full h-full"></canvas> -->
-    </div>
-
     <!-- 中央內容 -->
     <div class="z-10 text-center max-w-2xl px-4">
       <h1 class="text-5xl font-bold text-white mb-4">一段文字大標</h1>
@@ -95,7 +152,7 @@ import Layout from "../layouts/Layout.astro";
         <div
           class="intro-carousel-container slider-container relative max-w-4xl mx-auto h-80 bg-gray-700 rounded-xl overflow-hidden"
         >
-          <!-- 輪播項目 (這裡示範三張圖片) -->
+          <!-- 輪播項目 -->
           <div
             class="intro-carousel-item absolute inset-0 opacity-100 transition-opacity duration-1000 flex items-center justify-center"
           >
@@ -147,30 +204,26 @@ import Layout from "../layouts/Layout.astro";
         </p>
       </div>
 
-      <!-- 產品特色部分 - 使用堆疊式輪播 -->
+      <!-- 產品特色部分 -->
       <div class="grid grid-cols-1 gap-8">
         <div class="flex justify-center">
           <div
             class="color-gallery-container flex rounded-lg overflow-hidden relative"
           >
-            <!-- 色塊作為圖片的代表 - 會由JavaScript動態填充 -->
             <div
               class="color-gallery flex transition-all duration-500"
               id="color-slider"
             >
-              <!-- JavaScript將動態生成10個項目 -->
             </div>
           </div>
         </div>
 
-        <!-- 產品特色標題 -->
         <div class="text-center mt-2">
           <h3 class="text-2xl font-bold text-gray-300">產品特色</h3>
         </div>
       </div>
     </div>
   </section>
-</Layout>
 
 <!-- 服務領域區塊 -->
 <section class="py-20 bg-gray-100">
@@ -195,7 +248,6 @@ import Layout from "../layouts/Layout.astro";
 
 <!-- 聯絡我們區塊 -->
 <section class="py-20 bg-gray-800 text-white relative">
-  <!-- 大型Contact us標題在左下角 (更靠左) -->
   <div
     class="absolute bottom-2 left-0 contact-title font-sans mb-[-20px]"
     style="line-height: 0.8;"
@@ -206,8 +258,6 @@ import Layout from "../layouts/Layout.astro";
   </div>
 
   <div class="container mx-auto px-4">
-    <!-- <h2 class="text-3xl font-bold text-center mb-12">聯絡我們</h2> -->
-
     <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
       <div>
         <h3 class="text-xl font-semibold mb-4">聯絡資訊</h3>
@@ -270,47 +320,58 @@ import Layout from "../layouts/Layout.astro";
 
       <div>
         <h3 class="text-xl font-semibold mb-4">傳送訊息</h3>
-        <form id="home-contact-form" action="https://formspree.io/f/xrgjaklb" method="POST" class="space-y-4">
+        
+        <!-- 顯示成功或錯誤訊息 -->
+        {successMessage && (
+          <div class="mb-4 p-3 bg-green-600 text-white rounded-lg">
+            {successMessage}
+          </div>
+        )}
+        
+        {errorMessage && (
+          <div class="mb-4 p-3 bg-red-600 text-white rounded-lg">
+            {errorMessage}
+          </div>
+        )}
+
+        <form method="POST" enctype="application/x-www-form-urlencoded" class="space-y-4">
           <div>
             <input
               type="text"
-              id="home-name"
               name="name"
               placeholder="姓名"
               class="w-full p-2 rounded bg-gray-700 text-white"
               required
             />
+            {errors.name && (
+              <p class="text-red-400 text-sm mt-1">{errors.name}</p>
+            )}
           </div>
           <div>
             <input
               type="email"
-              id="home-email"
               name="email"
               placeholder="電子郵件"
               class="w-full p-2 rounded bg-gray-700 text-white"
               required
             />
+            {errors.email && (
+              <p class="text-red-400 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
           <div>
             <textarea
-              id="home-message"
               name="message"
               rows="4"
               placeholder="訊息內容"
               class="w-full p-2 rounded bg-gray-700 text-white"
               required></textarea>
+            {errors.message && (
+              <p class="text-red-400 text-sm mt-1">{errors.message}</p>
+            )}
           </div>
 
-          <div id="home-form-status" class="hidden">
-            <p id="home-success-message" class="text-green-400 hidden">
-              訊息已成功發送！我們將盡快回覆您。
-            </p>
-            <p id="home-error-message" class="text-red-400 hidden">
-              發送訊息時出錯，請稍後再試。
-            </p>
-          </div>
-
-          <button type="submit" id="home-submit-button" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
+          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
             送出
           </button>
         </form>
@@ -326,6 +387,7 @@ import Layout from "../layouts/Layout.astro";
   </div>
 </footer>
 
+<!-- 保留所有原有樣式和腳本 -->
 <style>
   .form-submit-transition {
     transition: all 0.3s ease-in-out;
@@ -370,31 +432,11 @@ import Layout from "../layouts/Layout.astro";
     }
   }
 
-  /* Coverflow 效果樣式 */
-  .coverflow-container {
-    overflow: visible;
-  }
-
-  .coverflow-left,
-  .coverflow-center,
-  .coverflow-right {
-    transition: all 0.5s ease;
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  }
-
-  .coverflow-center {
-    transform: translateZ(100px);
-  }
-
-  /* 顏色圖庫樣式 */
   .color-gallery-container {
     width: auto;
     overflow: hidden;
     position: relative;
     transition: all 0.5s ease;
-    /* 堆疊式輪播新增樣式 */
     perspective: 1000px;
     height: 300px;
     background-color: rgba(0, 0, 0, 0.1);
@@ -418,8 +460,7 @@ import Layout from "../layouts/Layout.astro";
   .color-item {
     transition: all 0.5s ease;
     cursor: pointer;
-    min-width: 4rem; /* 確保每個顏色方塊的最小寬度 */
-    /* 堆疊式輪播新增樣式 */
+    min-width: 4rem;
     position: absolute;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -434,7 +475,6 @@ import Layout from "../layouts/Layout.astro";
     transform: scale(1.05);
   }
 
-  /* 導航按鈕樣式 */
   .stack-prev-btn,
   .stack-next-btn {
     width: 40px;
@@ -454,7 +494,6 @@ import Layout from "../layouts/Layout.astro";
     opacity: 1;
   }
 
-  /* 堆疊計數器樣式 */
   .left-stack-counter,
   .right-stack-counter {
     font-size: 14px;
@@ -465,7 +504,6 @@ import Layout from "../layouts/Layout.astro";
     margin: 8px;
   }
 
-  /* 動畫效果 */
   @keyframes pulse {
     0% {
       transform: scale(1);
@@ -483,24 +521,12 @@ import Layout from "../layouts/Layout.astro";
     z-index: 10;
   }
 
+  .contact-title {
+    line-height: 0.8;
+    margin-left: -0.5rem;
+  }
+
   @media (max-width: 768px) {
-    .coverflow-left {
-      left: 20%;
-      width: 50px;
-      height: 50px;
-    }
-
-    .coverflow-right {
-      left: 80%;
-      width: 50px;
-      height: 50px;
-    }
-
-    .coverflow-center {
-      width: 200px;
-      height: 200px;
-    }
-
     .color-gallery-container {
       max-width: 90vw;
       height: 250px;
@@ -516,16 +542,7 @@ import Layout from "../layouts/Layout.astro";
       height: 30px;
       font-size: 16px;
     }
-  }
 
-  /* 調整 Contact us 文字樣式 */
-  .contact-title {
-    line-height: 0.8;
-    margin-left: -0.5rem; /* 負 margin 使文字更靠近邊緣 */
-  }
-
-  /* 在不同螢幕尺寸上調整文字位置 */
-  @media (max-width: 768px) {
     .contact-title {
       margin-left: -0.25rem;
     }
@@ -534,29 +551,7 @@ import Layout from "../layouts/Layout.astro";
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const homeForm = document.getElementById("home-contact-form");
-    const homeSubmitButton = document.getElementById("home-submit-button");
-    const homeFormStatus = document.getElementById("home-form-status");
-    const homeSuccessMessage = document.getElementById("home-success-message");
-    const homeErrorMessage = document.getElementById("home-error-message");
-
-    if (homeForm) {
-      homeForm.addEventListener("submit", function (e) {
-        // 不需要阻止默認提交行為，表單將直接提交到 Formspree
-        // Formspree 會處理表單提交和感謝頁面
-        
-        // 如果您想要顯示提交中的視覺反饋，可以保留這部分：
-        if (homeSubmitButton) {
-          homeSubmitButton.disabled = true;
-          homeSubmitButton.textContent = "發送中...";
-        }
-      });
-    }
-  });
-
-  // 滾動按鈕功能與圖片輪播功能
-  document.addEventListener("DOMContentLoaded", () => {
-    // 原有的滾動按鈕功能
+    // 滾動按鈕功能
     const scrollButton = document.getElementById("scroll-down");
     const contentSection = document.getElementById("content-section");
     if (scrollButton && contentSection) {
@@ -565,75 +560,52 @@ import Layout from "../layouts/Layout.astro";
       });
     }
 
-    // 也檢查 products-section (為了兼容兩種可能的 ID)
-    const productsSection = document.getElementById("products-section");
-    if (scrollButton && productsSection && !contentSection) {
-      scrollButton.addEventListener("click", () => {
-        productsSection.scrollIntoView({ behavior: "smooth" });
-      });
-    }
-
     // 企業簡介輪播功能
-    const introCarouselItems = document.querySelectorAll(
-      ".intro-carousel-item",
-    );
+    const introCarouselItems = document.querySelectorAll(".intro-carousel-item");
     const introCarouselDots = document.querySelectorAll(".intro-carousel-dot");
 
-    // 只有在找到輪播元素時才初始化輪播功能
     if (introCarouselItems.length > 0 && introCarouselDots.length > 0) {
       let introCurrentSlide = 0;
       let introAutoSlideInterval;
 
-      // 初始化輪播控制點點擊事件
       introCarouselDots.forEach((dot, index) => {
         dot.addEventListener("click", () => {
           showIntroSlide(index);
         });
       });
 
-      // 顯示指定的輪播項目
       function showIntroSlide(index) {
-        // 隱藏所有輪播項目
         introCarouselItems.forEach((item) => {
           item.classList.remove("opacity-100");
           item.classList.add("opacity-0");
         });
 
-        // 重置所有控制點
         introCarouselDots.forEach((dot) => {
           dot.classList.remove("bg-white");
           dot.classList.add("bg-gray-400");
         });
 
-        // 顯示指定輪播項目
         if (introCarouselItems[index]) {
           introCarouselItems[index].classList.remove("opacity-0");
           introCarouselItems[index].classList.add("opacity-100");
         }
 
-        // 高亮顯示對應控制點
         if (introCarouselDots[index]) {
           introCarouselDots[index].classList.remove("bg-gray-400");
           introCarouselDots[index].classList.add("bg-white");
         }
 
-        // 更新當前輪播項目索引
         introCurrentSlide = index;
       }
 
-      // 自動輪播
       function introAutoSlide() {
         let nextSlide = (introCurrentSlide + 1) % introCarouselItems.length;
         showIntroSlide(nextSlide);
       }
 
-      // 設置自動輪播
       introAutoSlideInterval = setInterval(introAutoSlide, 5000);
 
-      // 當鼠標懸停在輪播上時暫停自動輪播
-      const introCarouselContainer = document.querySelector(
-        ".intro-carousel-container",
-      );
+      const introCarouselContainer = document.querySelector(".intro-carousel-container");
       if (introCarouselContainer) {
         introCarouselContainer.addEventListener("mouseenter", () => {
           clearInterval(introAutoSlideInterval);
@@ -645,20 +617,15 @@ import Layout from "../layouts/Layout.astro";
       }
     }
 
-    // 顏色圖庫功能 - 改造為堆疊式輪播
+    // 顏色圖庫功能
     const initColorGallery = () => {
-      const colorGalleryContainer = document.querySelector(
-        ".color-gallery-container",
-      );
-      const colorGalleryArrow = document.querySelector(".color-gallery-arrow");
+      const colorGalleryContainer = document.querySelector(".color-gallery-container");
       const colorSlider = document.getElementById("color-slider");
 
       if (!colorSlider || !colorGalleryContainer) return;
 
-      // 清空原有內容，重新建立10張照片
       colorSlider.innerHTML = "";
 
-      // 輪播圖片數據 - 10張照片
       const colorItems = [
         { index: 0, color: "bg-gray-200" },
         { index: 1, color: "bg-gray-300" },
@@ -672,36 +639,27 @@ import Layout from "../layouts/Layout.astro";
         { index: 9, color: "bg-blue-700" },
       ];
 
-      // 建立照片元素
       colorItems.forEach((item) => {
         const colorItem = document.createElement("div");
         colorItem.className = `color-item ${item.color} cursor-pointer`;
         colorItem.setAttribute("data-index", item.index);
 
-        // 增加照片編號顯示
         const label = document.createElement("span");
-        label.className =
-          "text-white font-bold flex items-center justify-center h-full";
+        label.className = "text-white font-bold flex items-center justify-center h-full";
         label.textContent = item.index + 1;
         colorItem.appendChild(label);
 
         colorSlider.appendChild(colorItem);
       });
 
-      // 重新獲取所有項目元素
       const colorItemElements = document.querySelectorAll(".color-item");
-
       let activeColorIndex = 0;
-      let isExpanded = false;
       let autoSlideInterval;
 
-      // 自動輪播功能
       const startAutoSlide = () => {
         autoSlideInterval = setInterval(() => {
-          if (!isExpanded) {
-            const nextIndex = (activeColorIndex + 1) % colorItemElements.length;
-            updateActiveColor(nextIndex, true);
-          }
+          const nextIndex = (activeColorIndex + 1) % colorItemElements.length;
+          updateActiveColor(nextIndex);
         }, 5000);
       };
 
@@ -709,17 +667,14 @@ import Layout from "../layouts/Layout.astro";
         clearInterval(autoSlideInterval);
       };
 
-      // 堆疊式照片布局
       function updateStackLayout(currentIndex) {
         const totalItems = colorItemElements.length;
         const centerX = colorGalleryContainer.offsetWidth / 2;
-        const centerY = colorGalleryContainer.offsetHeight / 2;
-        const activeWidth = colorGalleryContainer.offsetWidth * 0.6; // 活動項目寬度為容器的60%
-        const stackItemWidth = 40; // 堆疊項目的寬度
-        const stackItemOffset = 10; // 堆疊項目之間的偏移量
-        const stackItemOpacity = 0.8; // 堆疊項目的透明度
+        const activeWidth = colorGalleryContainer.offsetWidth * 0.6;
+        const stackItemWidth = 40;
+        const stackItemOffset = 10;
+        const stackItemOpacity = 0.8;
 
-        // 先隱藏所有項目
         colorItemElements.forEach((item) => {
           item.style.position = "absolute";
           item.style.width = `${stackItemWidth}px`;
@@ -731,7 +686,6 @@ import Layout from "../layouts/Layout.astro";
           item.classList.remove("active-item");
         });
 
-        // 設置當前項目
         const activeItem = colorItemElements[currentIndex];
         if (activeItem) {
           activeItem.style.width = `${activeWidth}px`;
@@ -742,17 +696,13 @@ import Layout from "../layouts/Layout.astro";
           activeItem.classList.add("active-item");
         }
 
-        // 左側堆疊 (currentIndex之前的項目)
         const leftStackCount = currentIndex;
         for (let i = 0; i < leftStackCount; i++) {
           const leftItem = colorItemElements[i];
           const distanceFromActive = currentIndex - i;
           const offset = stackItemOffset * distanceFromActive;
           const zIndex = 5 - distanceFromActive;
-          const opacity = Math.max(
-            0.3,
-            stackItemOpacity - 0.1 * distanceFromActive,
-          );
+          const opacity = Math.max(0.3, stackItemOpacity - 0.1 * distanceFromActive);
 
           leftItem.style.left = `${centerX - activeWidth / 2 - stackItemWidth - offset}px`;
           leftItem.style.zIndex = zIndex;
@@ -760,7 +710,6 @@ import Layout from "../layouts/Layout.astro";
           leftItem.style.transform = `translateX(${offset}px) scale(${0.8 - 0.05 * distanceFromActive})`;
         }
 
-        // 右側堆疊 (currentIndex之後的項目)
         const rightStackCount = totalItems - currentIndex - 1;
         for (let i = 1; i <= rightStackCount; i++) {
           const rightItem = colorItemElements[currentIndex + i];
@@ -774,113 +723,74 @@ import Layout from "../layouts/Layout.astro";
           rightItem.style.transform = `translateX(-${offset}px) scale(${0.8 - 0.05 * i})`;
         }
 
-        // 顯示左右堆疊的計數
         updateStackCounter(leftStackCount, rightStackCount);
       }
 
-      // 更新左右堆疊計數器
       function updateStackCounter(leftCount, rightCount) {
-        // 檢查計數器是否存在，如果不存在則創建
         let leftCounter = document.querySelector(".left-stack-counter");
         let rightCounter = document.querySelector(".right-stack-counter");
 
         if (!leftCounter) {
           leftCounter = document.createElement("div");
-          leftCounter.className =
-            "left-stack-counter absolute top-0 left-0 bg-gray-800 text-white px-2 py-1 rounded-bl z-20";
+          leftCounter.className = "left-stack-counter absolute top-0 left-0 bg-gray-800 text-white px-2 py-1 rounded-bl z-20";
           colorGalleryContainer.appendChild(leftCounter);
         }
 
         if (!rightCounter) {
           rightCounter = document.createElement("div");
-          rightCounter.className =
-            "right-stack-counter absolute top-0 right-0 bg-gray-800 text-white px-2 py-1 rounded-br z-20";
+          rightCounter.className = "right-stack-counter absolute top-0 right-0 bg-gray-800 text-white px-2 py-1 rounded-br z-20";
           colorGalleryContainer.appendChild(rightCounter);
         }
 
-        // 更新計數器內容
         leftCounter.textContent = leftCount > 0 ? `← ${leftCount}` : "";
         rightCounter.textContent = rightCount > 0 ? `${rightCount} →` : "";
       }
 
-      // 更新高亮的顏色
-      function updateActiveColor(index, triggerCoverflow = true) {
+      function updateActiveColor(index) {
         activeColorIndex = index;
-
-        // 更新堆疊式布局
         updateStackLayout(index);
-
-        // 同時更新 Coverflow 中的圖片
-        if (triggerCoverflow && window.goToCarouselSlide) {
-          window.goToCarouselSlide(index);
-        }
       }
 
-      // 增加左右導航按鈕
       function addNavigationButtons() {
         let prevBtn = document.querySelector(".stack-prev-btn");
         let nextBtn = document.querySelector(".stack-next-btn");
 
         if (!prevBtn) {
           prevBtn = document.createElement("button");
-          prevBtn.className =
-            "stack-prev-btn absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full p-2 z-20";
+          prevBtn.className = "stack-prev-btn absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full p-2 z-20";
           prevBtn.innerHTML = "←";
           colorGalleryContainer.appendChild(prevBtn);
         }
 
         if (!nextBtn) {
           nextBtn = document.createElement("button");
-          nextBtn.className =
-            "stack-next-btn absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full p-2 z-20";
+          nextBtn.className = "stack-next-btn absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full p-2 z-20";
           nextBtn.innerHTML = "→";
           colorGalleryContainer.appendChild(nextBtn);
         }
 
-        // 綁定事件
         prevBtn.addEventListener("click", () => {
-          const prevIndex =
-            (activeColorIndex - 1 + colorItemElements.length) %
-            colorItemElements.length;
-          updateActiveColor(prevIndex, true);
+          const prevIndex = (activeColorIndex - 1 + colorItemElements.length) % colorItemElements.length;
+          updateActiveColor(prevIndex);
         });
 
         nextBtn.addEventListener("click", () => {
           const nextIndex = (activeColorIndex + 1) % colorItemElements.length;
-          updateActiveColor(nextIndex, true);
+          updateActiveColor(nextIndex);
         });
       }
 
-      // 鍵盤控制
-      document.addEventListener("keydown", (e) => {
-        // 左箭頭鍵 - 上一張
-        if (e.key === "ArrowLeft") {
-          const prevIndex =
-            (activeColorIndex - 1 + colorItemElements.length) %
-            colorItemElements.length;
-          updateActiveColor(prevIndex, true);
-        }
-        // 右箭頭鍵 - 下一張
-        else if (e.key === "ArrowRight") {
-          const nextIndex = (activeColorIndex + 1) % colorItemElements.length;
-          updateActiveColor(nextIndex, true);
-        }
-      });
-
-      // 綁定點擊事件
       colorItemElements.forEach((item) => {
         item.addEventListener("click", () => {
           const index = parseInt(item.getAttribute("data-index"));
-          updateActiveColor(index, true);
+          updateActiveColor(index);
         });
       });
 
-      // 初始化
       addNavigationButtons();
-      updateActiveColor(0, true);
+      updateActiveColor(0);
       startAutoSlide();
 
-      // 鼠標事件
       colorGalleryContainer.addEventListener("mouseenter", () => {
         stopAutoSlide();
       });
@@ -888,82 +798,9 @@ import Layout from "../layouts/Layout.astro";
       colorGalleryContainer.addEventListener("mouseleave", () => {
         startAutoSlide();
       });
-
-      // 觸控支援
-      let touchStartX = 0;
-
-      colorGalleryContainer.addEventListener("touchstart", (e) => {
-        touchStartX = e.touches[0].clientX;
-        stopAutoSlide();
-      });
-
-      colorGalleryContainer.addEventListener("touchend", (e) => {
-        const touchEndX = e.changedTouches[0].clientX;
-        const diffX = touchEndX - touchStartX;
-
-        if (diffX > 50) {
-          // 向右滑動，切換到上一張
-          const prevIndex =
-            (activeColorIndex - 1 + colorItemElements.length) %
-            colorItemElements.length;
-          updateActiveColor(prevIndex, true);
-        } else if (diffX < -50) {
-          // 向左滑動，切換到下一張
-          const nextIndex = (activeColorIndex + 1) % colorItemElements.length;
-          updateActiveColor(nextIndex, true);
-        }
-
-        startAutoSlide();
-      });
-
-      // 向外暴露方法以便其他功能可以調用
-      window.updateActiveColor = updateActiveColor;
     };
 
-    // 初始化顏色圖庫
     initColorGallery();
-
-    // 初始化 Coverflow 輪播
-    const coverflowInit = () => {
-      // 輪播相關元素
-      const coverflowContainer = document.querySelector(".coverflow-container");
-      const prevButton = document.getElementById("coverflow-prev");
-      const nextButton = document.getElementById("coverflow-next");
-      const dots = document.querySelectorAll(".carousel-dot");
-
-      if (!coverflowContainer) return; // 如果找不到容器，直接返回
-
-      // 輪播資料 (與顏色項目相同數量)
-      const slides = [
-        { id: 0, title: "產品圖片 1", bgClass: "bg-gray-200" },
-        { id: 1, title: "產品圖片 2", bgClass: "bg-gray-300" },
-        { id: 2, title: "產品圖片 3", bgClass: "bg-gray-400" },
-        { id: 3, title: "產品圖片 4", bgClass: "bg-gray-500" },
-        { id: 4, title: "產品圖片 5", bgClass: "bg-gray-600" },
-        { id: 5, title: "產品圖片 6", bgClass: "bg-gray-700" },
-        { id: 6, title: "產品圖片 7", bgClass: "bg-gray-800" },
-        { id: 7, title: "產品圖片 8", bgClass: "bg-blue-500" },
-        { id: 8, title: "產品圖片 9", bgClass: "bg-blue-600" },
-        { id: 9, title: "產品圖片 10", bgClass: "bg-blue-700" },
-      ];
-
-      let currentIndex = 0;
-
-      // 跳到指定索引
-      const goToSlide = (index) => {
-        currentIndex = index;
-        // 可以在這裡添加其他需要的邏輯
-      };
-
-      // 將 goToSlide 函數暴露到全局以便其他功能可以使用
-      window.goToCarouselSlide = goToSlide;
-
-      return {
-        goToSlide,
-      };
-    };
-
-    // 初始化 Coverflow 輪播
-    const coverflow = coverflowInit();
   });
 </script>
+</Layout>

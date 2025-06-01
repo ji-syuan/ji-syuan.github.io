@@ -1,31 +1,26 @@
 {
-    "name": "devidevio",
-    "type": "module",
-    "version": "1.0.0",
-    "scripts": {
-        "dev": "astro dev",
-        "build": "astro build",
-        "preview": "astro preview",
-        "astro": "astro"
-    },
-    "dependencies": {
-        "@astrojs/node": "^9.2.1",
-        "@emailjs/browser": "^4.4.1",
-        "astro": "^5.7.11",
-        "nodemailer": "^7.0.3",
-        "shiki": "^3.1.0",
-        "swetrix": "^3.5.4",
-        "tailwindcss": "^3.4.17"
-    },
-    "devDependencies": {
-        "@astrojs/sitemap": "^3.2.1",
-        "@astrojs/tailwind": "^5.1.4",
-        "astro-compress": "^2.3.6",
-        "sass": "^1.85.1"
-    },
-    "description": "project-root/ ├── public/ │   ├── img/ │   │   ├── logo.svg │   │   ├── products/ │   │   └── services/ │   └── favicon.ico ├── src/ │   ├── components/ │   │   ├── Breadcrumb.astro │   │   ├── Card.astro │   │   ├── Footer.astro │   │   ├── Navbar.astro │   │   ├── Newsletter.astro │   │   └── Sidebar.astro │   ├── layouts/ │   │   └── Layout.astro │   ├── pages/ │   │   ├── index.astro │   │   ├── about.astro │   │   ├── contact.astro │   │   ├── products/ │   │   │   ├── index.astro │   │   │   └── [id].astro │   │   ├── services/ │   │   │   ├── index.astro │   │   │   └── [id].astro │   │   └── news/ │   │       ├── index.astro │   │       └── [id].astro │   └── styles/ │       └── global.scss ├── astro.config.mjs ├── package.json ├── tailwind.config.js └── tsconfig.json",
-    "main": "tailwind.config.js",
-    "keywords": [],
-    "author": "",
-    "license": "ISC"
+  "name": "devidevio",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/netlify": "^4.1.1",
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/tailwind": "^5.1.1",
+    "astro": "^4.15.12",
+    "astro-compress": "^2.3.1",
+    "dotenv": "^16.0.0",
+    "nodemailer": "^6.9.0",
+    "tailwindcss": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.0",
+    "sass-embedded": "^1.89.1",
+    "typescript": "^5.6.3"
+  }
 }
