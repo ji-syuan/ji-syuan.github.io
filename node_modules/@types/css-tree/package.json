@@ -1,0 +1,31 @@
+{
+    "name": "@types/css-tree",
+    "version": "2.3.10",
+    "description": "TypeScript definitions for css-tree",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/css-tree",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Erik Källén",
+            "githubUsername": "erik-kallen",
+            "url": "https://github.com/erik-kallen"
+        },
+        {
+            "name": "Jason Kratzer",
+            "githubUsername": "pyoor",
+            "url": "https://github.com/pyoor"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/css-tree"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "peerDependencies": {},
+    "typesPublisherContentHash": "e05b2a8814822786a494f85847feb174e2af238259e7e221c141bebbf2e51a67",
+    "typeScriptVersion": "5.0"
+}

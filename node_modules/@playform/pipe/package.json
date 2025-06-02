@@ -1,0 +1,46 @@
+{
+	"name": "@playform/pipe",
+	"version": "0.1.3",
+	"private": false,
+	"description": "Pipe 🧪",
+	"keywords": [
+		"pipe",
+		"file",
+		"processing",
+		"javascript",
+		"playform"
+	],
+	"homepage": "HTTPS://GitHub.Com/PlayForm/Pipe#readme",
+	"bugs": {
+		"url": "HTTPS://GitHub.Com/PlayForm/Pipe/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/PlayForm/Pipe.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "Source ✍🏻 Open 👐🏻",
+		"email": "Source/Open@PlayForm.LTD",
+		"url": "HTTPS://PlayForm.LTD"
+	},
+	"type": "module",
+	"main": "./Target/Class/Pipe.js",
+	"types": "./Target/Class/Pipe.d.ts",
+	"scripts": {
+		"Run": "Build 'Source/**/*.ts' --Watch",
+		"prepublishOnly": "Build 'Source/**/*.ts'"
+	},
+	"dependencies": {
+		"@types/node": "22.13.14",
+		"deepmerge-ts": "7.1.5",
+		"fast-glob": "3.3.3"
+	},
+	"devDependencies": {
+		"@playform/build": "0.2.1"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}

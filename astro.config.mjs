@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-
 import tailwind from '@astrojs/tailwind';
 import compress from 'astro-compress';
 import sitemap from '@astrojs/sitemap';
@@ -8,9 +7,8 @@ export default defineConfig({
     output: 'static',
     trailingSlash: 'always',
     site: 'https://ji-syuan.github.io',
-    base: '/',
+    base: '/', // 替換為實際的倉庫名稱
 
-    // Single page, no prefetch needed
     prefetch: false,
 
     integrations: [
@@ -23,12 +21,10 @@ export default defineConfig({
             HTML: {
                 "html-minifier-terser": {
                     collapseWhitespace: true,
-                    // collapseInlineTagWhitespace: true, // It breaks display-inline / flex-inline text
                     minifyCSS: true,
                     minifyJS: true,
                     removeComments: true,
                     removeEmptyAttributes: true,
-                    // removeEmptyElements: true, // It removes sometimes SVGs
                     removeRedundantAttributes: true
                 },
             },
