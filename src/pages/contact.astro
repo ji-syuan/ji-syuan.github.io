@@ -29,7 +29,7 @@ const pageTitle = "聯絡我們 | 公司名稱";
                 <div class="contact-form-container">
                     <h2 class="text-xl font-semibold text-white mb-4">傳送訊息</h2>
                     
-                    <form id="contact-form" action="https://formspree.io/f/xrgjaklb" method="POST" class="space-y-4">
+                    <form class="space-y-4">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-300 mb-1">姓名</label>
                             <input 
@@ -38,7 +38,6 @@ const pageTitle = "聯絡我們 | 公司名稱";
                                 name="name" 
                                 class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg focus:border-primary focus:outline-none text-white"
                                 placeholder="請輸入您的姓名"
-                                required
                             />
                         </div>
                         
@@ -50,7 +49,6 @@ const pageTitle = "聯絡我們 | 公司名稱";
                                 name="email" 
                                 class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg focus:border-primary focus:outline-none text-white"
                                 placeholder="請輸入您的電子郵件"
-                                required
                             />
                         </div>
                         
@@ -62,7 +60,6 @@ const pageTitle = "聯絡我們 | 公司名稱";
                                 name="subject" 
                                 class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg focus:border-primary focus:outline-none text-white"
                                 placeholder="請輸入訊息主旨"
-                                required
                             />
                         </div>
                         
@@ -74,14 +71,12 @@ const pageTitle = "聯絡我們 | 公司名稱";
                                 rows="5" 
                                 class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg focus:border-primary focus:outline-none text-white"
                                 placeholder="請輸入您的訊息內容"
-                                required
                             ></textarea>
                         </div>
                         
                         <button 
                             type="submit" 
-                            id="submit-button"
-                            class="w-full py-2 bg-primary text-black font-medium rounded-lg hover:bg-opacity-90 transition-all form-submit-transition"
+                            class="w-full py-2 bg-primary text-black font-medium rounded-lg hover:bg-opacity-90 transition-all"
                         >
                             送出訊息
                         </button>
@@ -156,31 +151,3 @@ const pageTitle = "聯絡我們 | 公司名稱";
     <!-- 頁腳 -->
     <Footer />
 </Layout>
-
-<style>
-  .form-submit-transition {
-    transition: all 0.3s ease-in-out;
-  }
-
-  .form-submit-success {
-    animation: success-pulse 1.5s ease-in-out;
-  }
-
-  @keyframes success-pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); box-shadow: 0 0 20px rgba(52, 211, 153, 0.4); }
-    100% { transform: scale(1); }
-  }
-
-  .form-submit-error {
-    animation: error-shake 0.5s ease-in-out;
-  }
-
-  @keyframes error-shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    50% { transform: translateX(10px); }
-    75% { transform: translateX(-10px); }
-    100% { transform: translateX(0); }
-  }
-</style>
