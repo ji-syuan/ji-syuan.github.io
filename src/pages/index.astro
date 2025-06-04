@@ -131,14 +131,12 @@ import Layout from '../layouts/Layout.astro';
 
   <!-- 聯絡我們區塊 -->
   <section class="py-20 bg-gray-800 text-white relative">
-    <!-- 大型Contact us標題在左下角 (更靠左) -->
+    <!-- 大型Contact us標題在左下角 -->
     <div class="absolute bottom-2 left-0 contact-title font-sans mb-[-20px]" style="line-height: 0.8;">
         <h2 class="text-6xl lg:text-9xl font-bold text-gray-100 pl-0 lg:pl-0">Contact us</h2>
     </div>
     
     <div class="container mx-auto px-4">
-      <!-- <h2 class="text-3xl font-bold text-center mb-12">聯絡我們</h2> -->
-      
       <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
           <h3 class="text-xl font-semibold mb-4">聯絡資訊</h3>
@@ -167,20 +165,74 @@ import Layout from '../layouts/Layout.astro';
         
         <div>
           <h3 class="text-xl font-semibold mb-4">傳送訊息</h3>
-          <form class="space-y-4">
+          
+          <!-- Web3Forms 表單 -->
+          <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="space-y-4">
+            <!-- Web3Forms Access Key - 請替換成您的 Access Key -->
+            <input type="hidden" name="access_key" value={import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY}>
+            
+            <!-- 防機器人蜜罐欄位 (隱藏) -->
+            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+            
+            <!-- 自訂主旨 -->
+            <input type="hidden" name="subject" value="來自網站的新聯絡表單">
+            <input type="hidden" name="from_name" value="網站聯絡表單">
+            
             <div>
-              <input type="text" placeholder="姓名" class="w-full p-2 rounded bg-gray-700 text-white">
+              <input 
+                type="text" 
+                name="name"
+                placeholder="姓名" 
+                class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none"
+                required
+              >
             </div>
             <div>
-              <input type="email" placeholder="電子郵件" class="w-full p-2 rounded bg-gray-700 text-white">
+              <input 
+                type="email" 
+                name="email"
+                placeholder="電子郵件" 
+                class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none"
+                required
+              >
             </div>
             <div>
-              <textarea rows="4" placeholder="訊息內容" class="w-full p-2 rounded bg-gray-700 text-white"></textarea>
+              <textarea 
+                name="message"
+                rows="4" 
+                placeholder="訊息內容" 
+                class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none resize-vertical"
+                required
+              ></textarea>
             </div>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
-              送出
+            <button 
+              type="submit" 
+              id="submit-btn"
+              class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              <span id="submit-text">送出</span>
+              <span id="submit-loading" class="hidden">發送中...</span>
             </button>
           </form>
+          
+          <!-- 成功/錯誤訊息 -->
+          <div id="success-message" class="hidden mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+            <div class="flex items-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span>訊息已成功發送！我們會盡快回覆您。</span>
+            </div>
+          </div>
+          
+          <div id="error-message" class="hidden mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            <div class="flex items-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>發送失敗，請稍後再試或直接聯絡我們。</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -347,6 +399,34 @@ import Layout from '../layouts/Layout.astro';
 @media (max-width: 768px) {
   .contact-title {
     margin-left: -0.25rem;
+  }
+}
+
+/* 表單樣式改善 */
+#contact-form input:focus,
+#contact-form textarea:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 成功/錯誤訊息動畫 */
+#success-message,
+#error-message {
+  transition: all 0.3s ease;
+}
+
+#success-message.show,
+#error-message.show {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style>
@@ -743,5 +823,73 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 初始化 Coverflow 輪播
   const coverflow = coverflowInit();
+
+  // === Web3Forms 聯絡表單處理 ===
+  const contactForm = document.getElementById('contact-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const submitText = document.getElementById('submit-text');
+  const submitLoading = document.getElementById('submit-loading');
+  const successMessage = document.getElementById('success-message');
+  const errorMessage = document.getElementById('error-message');
+  
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // 顯示載入狀態
+      submitBtn.disabled = true;
+      submitText.classList.add('hidden');
+      submitLoading.classList.remove('hidden');
+      
+      // 隱藏之前的訊息
+      successMessage.classList.add('hidden');
+      errorMessage.classList.add('hidden');
+      
+      try {
+        const formData = new FormData(contactForm);
+        
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // 顯示成功訊息
+          successMessage.classList.remove('hidden');
+          successMessage.classList.add('show');
+          
+          // 重置表單
+          contactForm.reset();
+          
+          // 3秒後隱藏成功訊息
+          setTimeout(() => {
+            successMessage.classList.add('hidden');
+            successMessage.classList.remove('show');
+          }, 5000);
+        } else {
+          throw new Error(data.message || '發送失敗');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        
+        // 顯示錯誤訊息
+        errorMessage.classList.remove('hidden');
+        errorMessage.classList.add('show');
+        
+        // 5秒後隱藏錯誤訊息
+        setTimeout(() => {
+          errorMessage.classList.add('hidden');
+          errorMessage.classList.remove('show');
+        }, 5000);
+      } finally {
+        // 恢復按鈕狀態
+        submitBtn.disabled = false;
+        submitText.classList.remove('hidden');
+        submitLoading.classList.add('hidden');
+      }
+    });
+  }
 });
 </script>
