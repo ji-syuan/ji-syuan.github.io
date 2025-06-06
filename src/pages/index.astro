@@ -45,6 +45,18 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </main>
 
+  <!-- 回到頂部按鈕 -->
+  <button 
+    id="back-to-top" 
+    class="fixed bottom-8 right-8 w-12 h-12 bg-blue-900 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 z-50 opacity-0 pointer-events-none"
+    aria-label="回到頂部"
+    title="回到頂部"
+  >
+    <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+    </svg>
+  </button>
+
   <!-- 內容區塊 -->
   <section id="content-section" class="bg-gray-100 py-20">
     <div class="container mx-auto px-4">
@@ -355,7 +367,41 @@ import Layout from '../layouts/Layout.astro';
   z-index: 10;
 }
 
+/* 回到頂部按鈕樣式 */
+#back-to-top {
+  transform: translateY(100px);
+  transition: all 0.3s ease;
+}
+
+#back-to-top.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+#back-to-top:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+#back-to-top:active {
+  transform: translateY(0);
+}
+
+/* 在小螢幕上調整按鈕位置 */
 @media (max-width: 768px) {
+  #back-to-top {
+    bottom: 6rem;
+    right: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  #back-to-top svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
   .coverflow-left {
     left: 20%;
     width: 50px;
@@ -434,6 +480,28 @@ import Layout from '../layouts/Layout.astro';
 <script>
 // 滾動按鈕功能與圖片輪播功能
 document.addEventListener('DOMContentLoaded', () => {
+  // === 回到頂部按鈕功能 ===
+  const backToTopButton = document.getElementById('back-to-top');
+  
+  if (backToTopButton) {
+    // 監聽滾動事件
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTopButton.classList.add('show');
+      } else {
+        backToTopButton.classList.remove('show');
+      }
+    });
+    
+    // 點擊回到頂部
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+  
   // 原有的滾動按鈕功能
   const scrollButton = document.getElementById('scroll-down');
   const contentSection = document.getElementById('content-section');
