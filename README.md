@@ -2,8 +2,8 @@
 - [x] translation func tradition/simplify Chinese
 - [x] contact area - send mail directly
 - [ ] wait (loading animation) 
-- [ ] hamburger menu for RWD
-- [ ] PageUp button
+- [x] hamburger menu for RWD
+- [x] PageUp button
 
 ### 🌳 tree of web project
 ```
