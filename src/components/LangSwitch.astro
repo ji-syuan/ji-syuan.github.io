@@ -3,7 +3,7 @@
 
 <div class="lang-switch">
   <button id="lang-toggle" aria-label="切換繁簡中文" title="切換繁簡中文">
-    <span class="lang-trad">繁</span> / <span class="lang-simp">简</span>
+    <span class="lang-trad">繁</span><span class="lang-divider"> / </span><span class="lang-simp">简</span>
   </button>
 </div>
 
@@ -31,6 +31,41 @@
     position: relative;
     z-index: 1000;
     pointer-events: auto;
+  }
+
+  /* 行動版樣式調整 */
+  @media (max-width: 640px) {
+    #lang-toggle {
+      min-width: 40px;
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    
+    /* 在行動版隱藏分隔符號和非當前語言 */
+    .lang-divider {
+      display: none;
+    }
+    
+    /* 繁體模式下隱藏簡體 */
+    html:not(.lang-simplified) .lang-simp {
+      display: none;
+    }
+    
+    /* 簡體模式下隱藏繁體 */
+    html.lang-simplified .lang-trad {
+      display: none;
+    }
+  }
+
+  /* 桌面版保持原樣 */
+  @media (min-width: 641px) {
+    .lang-divider {
+      display: inline;
+    }
+    
+    .lang-trad, .lang-simp {
+      display: inline-block;
+    }
   }
 
   #lang-toggle:hover {
@@ -147,7 +182,7 @@
               // 檢查父元素是否存在
               if (!node.parentElement) return NodeFilter.FILTER_REJECT;
               
-              // 忽略腳本、樣式和代碼塊
+              // 忽略腳本、樣式和代碼塊，以及語言切換按鈕
               const parent = node.parentElement;
               const tagName = parent.tagName.toUpperCase();
               
@@ -156,7 +191,8 @@
                   tagName === 'PRE' || 
                   tagName === 'CODE' || 
                   parent.classList.contains('lang-trad') ||
-                  parent.classList.contains('lang-simp')) {
+                  parent.classList.contains('lang-simp') ||
+                  parent.closest('.lang-switch')) {
                 return NodeFilter.FILTER_REJECT;
               }
               
@@ -210,7 +246,7 @@
               // 檢查父元素是否存在
               if (!node.parentElement) return NodeFilter.FILTER_REJECT;
               
-              // 忽略腳本、樣式和代碼塊
+              // 忽略腳本、樣式和代碼塊，以及語言切換按鈕
               const parent = node.parentElement;
               const tagName = parent.tagName.toUpperCase();
               
@@ -219,7 +255,8 @@
                   tagName === 'PRE' || 
                   tagName === 'CODE' || 
                   parent.classList.contains('lang-trad') ||
-                  parent.classList.contains('lang-simp')) {
+                  parent.classList.contains('lang-simp') ||
+                  parent.closest('.lang-switch')) {
                 return NodeFilter.FILTER_REJECT;
               }
               

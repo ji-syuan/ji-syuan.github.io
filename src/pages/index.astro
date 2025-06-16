@@ -1,36 +1,61 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import LangSwitch from '../components/LangSwitch.astro';
 ---
 
 <Layout title="首頁 | 公司名稱">
-<!-- 頂部固定導航欄 -->
-<header class="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 py-4">
-  <!-- 灰色圓角背景條 (設置最大寬度) -->
-  <div class="bg-gray-600 rounded-full flex justify-between items-center px-6 py-2 max-w-5xl w-full">
-    <!-- 左側 LOGO -->
-    <div class="logo-container">
-      <div class="text-white text-2xl font-bold">LOGO</div>
-      <!-- 替換為您的 LOGO 圖片 -->
-      <!-- <img src="/img/logo.svg" alt="公司 LOGO" class="h-10"> -->
+  <!-- 頂部固定導航欄 - 響應式版本 -->
+  <header class="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 py-4">
+    <!-- 灰色圓角背景條 -->
+    <div class="bg-gray-600 rounded-full flex justify-between items-center px-6 py-2 max-w-5xl w-full relative">
+      <!-- 左側 LOGO -->
+      <div class="logo-container">
+        <div class="text-white text-2xl font-bold">LOGO</div>
+      </div>
+      
+      <!-- 桌面版導航選單 - 在 md 以上螢幕顯示 -->
+      <nav class="main-nav hidden md:flex">
+        <ul class="flex">
+          <li><a href="/about" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">認識我們</a></li>
+          <li><a href="/products" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">產品介紹</a></li>
+          <li><a href="/services" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">服務領域</a></li>
+          <li><a href="/contact" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">聯絡我們</a></li>
+        </ul>
+      </nav>
+      
+      <!-- 右側區域 -->
+      <div class="flex items-center gap-3">
+        <!-- 行動版漢堡選單按鈕 - 只在 md 以下螢幕顯示 -->
+        <button 
+          id="mobile-menu-btn" 
+          class="md:hidden text-white hover:text-blue-200 transition-colors"
+          aria-label="開啟選單"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
     </div>
     
-    <!-- 右側導航選單 -->
-    <nav class="main-nav">
-      <ul class="flex">
-        <li><a href="/about" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">認識我們</a></li>
-        <li><a href="/products" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">產品介紹</a></li>
-        <li><a href="/services" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">服務領域</a></li>
-        <li><a href="/contact" class="px-5 py-2 block text-white hover:text-blue-200 transition-colors">聯絡我們</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+    <!-- 行動版選單 - 預設隱藏 -->
+    <div 
+      id="mobile-menu" 
+      class="absolute top-full left-4 right-4 mt-2 bg-gray-700 rounded-lg shadow-lg overflow-hidden hidden md:hidden"
+    >
+      <nav class="p-4">
+        <ul class="space-y-2">
+          <li><a href="/about" class="block px-4 py-3 text-white hover:bg-gray-600 rounded-lg transition-colors">認識我們</a></li>
+          <li><a href="/products" class="block px-4 py-3 text-white hover:bg-gray-600 rounded-lg transition-colors">產品介紹</a></li>
+          <li><a href="/services" class="block px-4 py-3 text-white hover:bg-gray-600 rounded-lg transition-colors">服務領域</a></li>
+          <li><a href="/contact" class="block px-4 py-3 text-white hover:bg-gray-600 rounded-lg transition-colors">聯絡我們</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
   <!-- 全屏背景和中央內容 -->
   <main class="h-screen w-full bg-black flex flex-col justify-center items-center relative">
-    <!-- 背景圖片 -->
-    <!-- <div class="absolute inset-0 bg-cover bg-center z-0 opacity-30" style="background-image: url('/img/tree-background.jpg')"></div> -->
-    
     <!-- 中央內容 -->
     <div class="z-10 text-center max-w-2xl px-4">
       <h1 class="text-5xl font-bold text-white mb-4">一段文字大標</h1>
@@ -259,6 +284,18 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <style>
+/* 行動版選單動畫 */
+#mobile-menu {
+  transition: all 0.3s ease-in-out;
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+#mobile-menu.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
 /* Coverflow 效果樣式 */
 .coverflow-container {
   overflow: visible;
@@ -480,6 +517,81 @@ import Layout from '../layouts/Layout.astro';
 <script>
 // 滾動按鈕功能與圖片輪播功能
 document.addEventListener('DOMContentLoaded', () => {
+  // === 行動版選單功能 ===
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+      const isVisible = mobileMenu.classList.contains('show');
+      
+      if (isVisible) {
+        // 隱藏選單
+        mobileMenu.classList.remove('show');
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+        }, 300);
+        
+        // 更換圖示為漢堡選單
+        mobileMenuBtn.innerHTML = `
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        `;
+      } else {
+        // 顯示選單
+        mobileMenu.classList.remove('hidden');
+        setTimeout(() => {
+          mobileMenu.classList.add('show');
+        }, 10);
+        
+        // 更換圖示為 X
+        mobileMenuBtn.innerHTML = `
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        `;
+      }
+    });
+    
+    // 點擊選單項目後關閉選單
+    const menuLinks = mobileMenu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('show');
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+        }, 300);
+        
+        // 重置漢堡選單圖示
+        mobileMenuBtn.innerHTML = `
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        `;
+      });
+    });
+    
+    // 點擊選單外部關閉選單
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        if (mobileMenu.classList.contains('show')) {
+          mobileMenu.classList.remove('show');
+          setTimeout(() => {
+            mobileMenu.classList.add('hidden');
+          }, 300);
+          
+          // 重置漢堡選單圖示
+          mobileMenuBtn.innerHTML = `
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          `;
+        }
+      }
+    });
+  }
+
   // === 回到頂部按鈕功能 ===
   const backToTopButton = document.getElementById('back-to-top');
   
@@ -961,3 +1073,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
+</Layout>
